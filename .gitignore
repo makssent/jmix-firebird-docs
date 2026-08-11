@@ -1,0 +1,13 @@
+# Antora build output
+build/
+public/
+.cache/
+
+### IntelliJ IDEA ###
+.idea/
+*.iml
+
+### VS Code ###
+.vscode/
+
+.DS_Store
