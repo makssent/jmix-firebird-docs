@@ -5,7 +5,7 @@
 [[dev-env]]
 == Настройка среды разработки
 
-Установите Jmix Studio и JDK, как описано в разделе xref:ROOT:setup.adoc[Установка], если вы еще не сделали этого.
+Установите Jmix Studio и JDK, как описано в разделе https://docs.jmix.ru/jmix/setup.html[Установка^] документации Jmix, если вы еще не сделали этого.
 
 В этом самоучителе мы будем использовать некоторые премиум-функции Studio, такие как визуальные дизайнеры и возможности генерации кода. Эти функции доступны бесплатно в небольших проектах, включающих до 10 сущностей и ролей, таких как проект в данном самоучителе.
 
@@ -155,48 +155,168 @@ image::project-setup/explore-project-8.png[align="center",width="641"]
 +
 Чтобы продолжить работу с самоучителем, снова откройте панель инструментов *Jmix* на левой стороне IDE.
 
+[[add-firebird]]
+== Подготовка к запуску
+
+Созданный проект настроен на встроенную базу HSQLDB. Прежде чем запускать его, переведем проект на Firebird: подключим аддон и драйвер, укажем параметры соединения и поправим скрипты Liquibase.
+
+[[firebird-dependencies]]
+=== Зависимости
+
+Откройте `build.gradle` и в блоке `dependencies` подключите аддон, а зависимость HSQLDB замените на драйвер Firebird:
+
+[source,groovy]
+----
+dependencies {
+    implementation 'io.jmix.core:jmix-core-starter'
+    implementation 'io.jmix.data:jmix-eclipselink-starter'
+    implementation 'io.jmix.security:jmix-security-starter'
+    implementation 'io.jmix.security:jmix-security-flowui-starter'
+    implementation 'io.jmix.security:jmix-security-data-starter'
+    implementation 'io.jmix.localfs:jmix-localfs-starter'
+    implementation 'io.jmix.flowui:jmix-flowui-starter'
+    implementation 'io.jmix.flowui:jmix-flowui-data-starter'
+    implementation 'io.jmix.flowui:jmix-flowui-themes'
+    implementation 'io.jmix.datatools:jmix-datatools-starter'
+    implementation 'io.jmix.datatools:jmix-datatools-flowui-starter'
+
+    // Добавлено для Firebird: аддон, дающий платформе поддержку БД
+    implementation 'io.github.makssent:jmix-firebird-starter:0.1.0'
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'com.vaadin:vaadin-dev'
+
+    // Заменено: вместо HSQLDB подключается JDBC-драйвер Firebird
+    // runtimeOnly 'org.hsqldb:hsqldb'
+    runtimeOnly 'org.firebirdsql.jdbc:jaybird:6.0.5'
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'io.jmix.flowui:jmix-flowui-test-assist'
+}
+----
+
+Аддон `jmix-firebird-starter` учит платформу работать с Firebird: реализует интерфейсы Jmix, описывающие диалект СУБД, регистрирует платформу EclipseLink с правильным отображением типов Java на типы Firebird и добавляет changelog Liquibase со значениями свойств, на которые ссылаются скрипты самой платформы. Исходную реализацию можно посмотреть в репозитории https://github.com/makssent/jmix-firebird-addon[makssent/jmix-firebird-addon^]. Jaybird - это JDBC-драйвер с открытым исходным кодом https://github.com/FirebirdSQL/jaybird[FirebirdSQL/jaybird^] для работы с Firebird.
+
+[NOTE]
+====
+После правки `build.gradle` IDE предложит обновить проект. Нажмите *Load Gradle Changes* или кнопку *Reload All Gradle Projects* (image:common/refresh.svg[]) в окне инструментов *Gradle* - иначе новые зависимости не попадут в classpath.
+====
+
+[[firebird-connection]]
+=== Параметры подключения
+
+В файле `application.properties` замените параметры HSQLDB на параметры своей базы Firebird:
+
+[source,properties]
+----
+# Заменено: вместо параметров HSQLDB - подключение к Firebird
+#main.datasource.url=jdbc:hsqldb:file:.jmix/hsqldb/onboarding
+#main.datasource.username=sa
+#main.datasource.password=
+main.datasource.url=jdbc:firebird://localhost:3050//path/to/onboarding.fdb?encoding=UTF8
+main.datasource.username=sysdba
+main.datasource.password=masterkey
+
+# Добавлено для Firebird
+main.datasource.driver-class-name=org.firebirdsql.jdbc.FBDriver
+jmix.data.dbms-type=firebird
+----
+
+Свойство `jmix.data.dbms-type` здесь ключевое: по нему платформа выбирает реализации, которые предоставляет аддон. Без него Jmix не поймет, что перед ним Firebird, даже если драйвер подключен.
+
+[WARNING]
+====
+База должна существовать до первого запуска. В отличие от встроенной HSQLDB, Firebird не создает файл базы сам. Создайте пустую базу заранее - например утилитой `isql` - и укажите путь к ней в `main.datasource.url`. Таблицы в ней создаст Liquibase при старте приложения.
+====
+
+[[firebird-liquibase]]
+=== Скрипты Liquibase
+
+Осталось поправить два места в скриптах.
+
+Первое - главный changelog `com/company/onboarding/liquibase/changelog.xml`. Добавьте в него включение файла аддона, причем перед включениями модулей Jmix:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- DO NOT REMOVE. This is a master changelog that runs all other changelogs. -->
+
+    <!-- Добавлено для Firebird: должно стоять перед включениями модулей Jmix -->
+    <include file="/io/github/makssent/jmix/firebird/liquibase/changelog.xml"/>
+
+    <include file="/io/jmix/data/liquibase/changelog.xml"/>
+    <include file="/io/jmix/flowuidata/liquibase/changelog.xml"/>
+    <include file="/io/jmix/securitydata/liquibase/changelog.xml"/>
+
+    <includeAll path="/com/company/onboarding/liquibase/changelog"/>
+
+</databaseChangeLog>
+----
+
+Порядок здесь важен. Файл аддона объявляет свойства Liquibase - например, `${uuid.type}` со значением `varchar(36)`, потому что отдельного типа UUID в Firebird нет. Объявленное свойство видно только тем скриптам, которые идут ниже по тексту, поэтому включение аддона должно стоять раньше остальных.
+
+Второе - файл `com/company/onboarding/liquibase/changelog/010-init-user.xml`, где создается учетная запись администратора. В шаблоне проекта эти вставки ограничены списком СУБД, и Firebird в него не входит. Допишите его в атрибут `dbms` у обоих changeset-ов:
+
+[source,xml]
+----
+<insert tableName="USER_" dbms="postgresql, mssql, hsqldb, firebird">
+----
+
+[source,xml]
+----
+<insert tableName="SEC_ROLE_ASSIGNMENT" dbms="postgresql, mssql, hsqldb, firebird">
+----
+
+Без этой правки база поднимется, но учетной записи `admin` в ней не окажется и войти в приложение не получится.
+
 [[run-app]]
-== Запуск приложения из IDE
+== Запуск приложения
 
 Вы можете запустить новый проект сразу после открытия его в IDE и увидеть начальное состояние вашего приложения.
 
-[[start-app]]
-=== Запуск приложения
-
-image::project-setup/run-app-1.png[align="center",width="593"]
-
-На главной панели инструментов найдите поле со значением `Onboarding Jmix Application` и нажмите кнопку *Debug* (image:common/start-debugger.svg[]) рядом с ним.
-
-[CAUTION]
+[WARNING]
 ====
-Если вы используете IntelliJ IDEA Ultimate, вы можете увидеть еще один элемент в раскрывающемся списке *Run/Debug Configurations*, который называется `OnboardingApplication` и имеет слева значок Spring Boot (image:common/spring-boot.svg[]). Он автоматически добавляется плагином Spring Boot, входящим в комплект поставки IDE. Не используйте его.
+В оригинальном самоучителе Jmix приложение запускают кнопкой *Debug* (image:common/start-debugger.svg[]) на главной панели инструментов. С Firebird этот способ не работает.
 
-Для запуска Jmix приложения всегда используйте конфигурацию, отмеченную значком Jmix (image:common/jmix.svg[]).
+Перед стартом Studio сверяет модель данных со схемой базы, чтобы при расхождении сгенерировать скрипт миграции. Для этого ей нужно уметь пересоздавать базу, а такая поддержка заложена в нее только для тех СУБД, с которыми Jmix работает штатно: HSQLDB, PostgreSQL, MySQL, MariaDB, Microsoft SQL Server и Oracle. Firebird в этот список не входит, поэтому проверка обрывается с ошибкой и до запуска приложения дело не доходит.
 ====
 
-Studio покажет предупреждение о хранилище данных и непримененных файлах changelog:
+Поэтому запускать приложение мы будем из консоли. Откройте терминал в корне проекта и выполните:
 
-image::project-setup/run-app-2.png[align="center",width="750"]
+[source,bash]
+----
+./gradlew bootRun
+----
 
-Что это означает?
+[NOTE]
+====
+Сборка не работает на JDK старше 21: запуск прервется ошибкой `Unsupported class file major version`, поскольку Gradle, которым собирается проект, такие версии пока не поддерживает.
 
-При каждом запуске приложения Studio пытается синхронизировать схему базы данных с моделью данных проекта. Поэтому, когда вы изменяете свои сущности и их атрибуты, Studio автоматически генерирует файлы Liquibase changelog для внесения соответствующих изменений в базу данных.
+Если основная JDK в системе новее, укажите подходящую явно:
 
-На данный момент наша база данных пуста (на самом деле, в нашем случае файловой базы данных HSQL по умолчанию она вообще не существует), поэтому, чтобы сгенерировать diff changelog, Studio сначала необходимо создать базу данных и выполнить все существующие файлы changelog проекта. В диалоговом окне вы можете просмотреть существующие файлы changelog из зависимостей проекта (помечены как _read only_) и из самого проекта (`010-init-user.xml`).
+[source,bash]
+----
+JAVA_HOME=/path/to/jdk-21 ./gradlew bootRun
+----
+====
 
-Нажмите *Execute and proceed*.
+При старте приложения Liquibase выполнит все файлы changelog проекта: сначала скрипты из зависимостей Jmix, затем скрипты самого проекта (`010-init-user.xml`). Так в пустой базе появятся таблицы и учетная запись администратора.
 
-Вы увидите выполнение Liquibase changelogs с помощью Studio в окне инструментов *Run* в нижней части экрана IDE:
+Когда приложение будет готово к работе, в конце вывода в консоли появятся сообщения:
 
-image::project-setup/run-app-3.png[align="center",width="1223"]
-
-Все существующие файлы changelog были исполнены, Studio проверила схему базы данных на наличие различий с моделью данных и ничего не нашла. Это ожидаемо: вы еще не внесли никаких изменений в модель данных.
-
-Сразу после проверки базы данных Studio создаст и запустит приложение. Вы увидите консольный вывод запущенного приложения в окне инструментов *Debug* в нижней части экрана IDE:
-
-image::project-setup/run-app-4.png[align="center",width="688"]
-
-Когда приложение будет готово к работе, вы увидите в консоли следующее сообщение: `Application started at ++http://localhost:8080++`.
+[source]
+----
+Application started at http://localhost:8080
+Application running at http://localhost:8080/
+----
 
 [[enter-app]]
 === Вход в приложение
@@ -216,13 +336,7 @@ image::project-setup/run-app-6.png[align="center"]
 [[stop-app]]
 === Остановка приложения
 
-Чтобы остановить запущенное приложение, нажмите кнопку *Stop* (image:common/suspend.svg[]) на главной панели инструментов:
-
-image::project-setup/run-app-7.png[align="center",width="639"]
-
-В консоли *Debug* вы увидите следующие сообщения:
-
-image::project-setup/run-app-8.png[align="center",width="740"]
+Чтобы остановить запущенное приложение, нажмите `Ctrl+C` в терминале.
 
 [[summary]]
 == Резюме

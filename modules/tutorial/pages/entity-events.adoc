@@ -7,7 +7,7 @@
 [[create-entity-changed-event-listener]]
 == Создание слушателя EntityChangedEvent
 
-Если ваше приложение запущено, остановите его с помощью кнопки *Stop* (image:common/suspend.svg[]) на главной панели инструментов.
+Если ваше приложение запущено, остановите его сочетанием `Ctrl+C` в терминале.
 
 В окне инструментов *Jmix* нажмите *New* (image:common/add.svg[]) -> *Event Listener*:
 

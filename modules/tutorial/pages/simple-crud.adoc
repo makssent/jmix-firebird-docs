@@ -17,7 +17,7 @@
 
 image::simple-crud/step-diagram.svg[align="center"]
 
-Если ваше приложение запущено, остановите его с помощью кнопки Stop (image:common/suspend.svg[]) на главной панели инструментов.
+Если ваше приложение запущено, остановите его сочетанием `Ctrl+C` в терминале.
 
 В окне инструментов *Jmix* нажмите *New* (image:common/add.svg[]) -> *JPA Entity*:
 
@@ -149,21 +149,24 @@ image::simple-crud/create-screens-8.png[align="center",width="1110"]
 
 После создания сущности и CRUD-экранов для нее вы можете запустить приложение, чтобы увидеть новую функциональность в действии.
 
-Нажмите на кнопку *Debug* (image:common/start-debugger.svg[]) на главной панели инструментов, как вы делали в xref:project-setup.adoc#run-app[предыдущем разделе].
+Запустите приложение из консоли, как вы делали в xref:project-setup.adoc#run-app[предыдущей главе]:
 
-Перед запуском приложения Studio проверяет разницу между моделью данных проекта и схемой базы данных. Как только вы создадите новую сущность, Studio сгенерирует Liquibase changelog для соответствующих изменений в базе данных (создание таблицы `STEP`):
+[source,bash]
+----
+./gradlew bootRun
+----
 
-image::simple-crud/run-app-1.png[align="center"]
+[WARNING]
+====
+Studio не сгенерирует скрипт Liquibase для новой таблицы `STEP`: с Firebird автогенерация не работает. Скрипт нужно написать вручную до запуска приложения, иначе оно поднимется, а при открытии экрана `Step.list` вы получите ошибку `Table unknown; STEP`.
+====
 
-Нажмите на кнопку *Save and run*.
+Скрипты Liquibase выполняются при старте приложения. В выводе команды появится строка о создании таблицы:
 
-Studio выполнит changelog для вашей базы данных:
-
-image::simple-crud/run-app-2.png[align="center",width="1075"]
-
-После этого Studio создаст и запустит приложение:
-
-image::simple-crud/run-app-3.png[align="center",width="1075"]
+[source]
+----
+Table STEP created
+----
 
 После старта сервера откройте `++http://localhost:8080++` в вашем веб-браузере и войдите в приложение с учетными данными администратора: имя пользователя - `admin`, пароль - `admin`.
 

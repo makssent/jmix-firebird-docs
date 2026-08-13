@@ -13,7 +13,7 @@ image::ui-from-scratch/my-onboarding.svg[]
 [[create-blank-view]]
 == Создание пустого экрана
 
-Если ваше приложение запущено, остановите его с помощью кнопки *Stop* (image:common/suspend.svg[]) на главной панели инструментов.
+Если ваше приложение запущено, остановите его сочетанием `Ctrl+C` в терминале.
 
 В окне инструментов *Jmix* нажмите *New* (image:common/add.svg[]) -> *View*:
 
@@ -49,7 +49,7 @@ image::ui-from-scratch/create-screen-5.png[align="center"]
 
 image::ui-from-scratch/create-screen-6.png[align="center",width="1142"]
 
-Запустите приложение, нажав кнопку *Debug* (image:common/start-debugger.svg[]) на главной панели инструментов. Откройте `++http://localhost:8080++` в вашем веб-браузере и войдите в приложение.
+Запустите приложение из консоли командой `./gradlew bootRun`. Откройте `++http://localhost:8080++` в вашем веб-браузере и войдите в приложение.
 
 Раскройте меню *Application*, нажмите на подпункт *My onboarding* и убедитесь, что ваш пустой экран открывается.
 
