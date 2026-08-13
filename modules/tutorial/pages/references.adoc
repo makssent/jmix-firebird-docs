@@ -142,17 +142,78 @@ Studio сгенерирует два экрана: `Department.list` и `Departm
 [[run-app]]
 == Запуск приложения
 
-Запустите приложение из консоли:
+Как и в xref:simple-crud.adoc#run-app[предыдущей главе], таблицу для новой сущности придется описать самостоятельно: для поддерживаемых СУБД Studio сгенерировала бы changelog перед запуском, а с Firebird автогенерация недоступна.
+
+Создайте файл `030-create-department.xml` в каталоге `src/main/resources/com/company/onboarding/liquibase/changelog`:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="onboarding">
+        <createTable tableName="DEPARTMENT">
+            <column name="ID" type="${uuid.type}">
+                <constraints primaryKey="true" primaryKeyName="PK_DEPARTMENT" nullable="false"/>
+            </column>
+            <column name="VERSION" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="HR_MANAGER_ID" type="${uuid.type}"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="onboarding">
+        <addUniqueConstraint tableName="DEPARTMENT" columnNames="NAME"
+                             constraintName="IDX_DEPARTMENT_UNQ_NAME"/>
+    </changeSet>
+
+    <changeSet id="3" author="onboarding">
+        <createIndex indexName="IDX_DEPARTMENT_HR_MANAGER" tableName="DEPARTMENT">
+            <column name="HR_MANAGER_ID"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="4" author="onboarding">
+        <addForeignKeyConstraint baseColumnNames="HR_MANAGER_ID"
+                                 baseTableName="DEPARTMENT"
+                                 constraintName="FK_DEPARTMENT_ON_HR_MANAGER"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="USER_"/>
+    </changeSet>
+
+</databaseChangeLog>
+----
+
+Здесь четыре changeset вместо одного: таблица, уникальное ограничение, индекс по столбцу внешнего ключа и сам внешний ключ. Так Liquibase применит изменения по частям, и если одно из них не пройдет, остальные останутся в силе.
+
+Имена ограничения и индекса взяты из аннотаций сущности - это те самые `IDX_DEPARTMENT_UNQ_NAME` и `IDX_DEPARTMENT_HR_MANAGER`, которые вы задали в дизайнере. Переименовывать их не стоит: по имени ограничения Jmix находит сообщение, которым заменяет системную ошибку базы данных. Как это работает, показано в разделе xref:references.adoc#change-unique-constraint-message[Изменение уникального сообщения о нарушении ограничений].
+
+Столбец `HR_MANAGER_ID` объявлен без ограничения `nullable`, поскольку ссылка `hrManager` необязательная. Тип столбца тот же `${uuid.type}`, что и у первичного ключа: внешний ключ должен совпадать по типу с колонкой, на которую ссылается.
+
+Теперь запустите приложение из консоли:
 
 [source,bash]
 ----
 ./gradlew bootRun
 ----
 
-[WARNING]
-====
-Скрипт Liquibase для таблицы `DEPARTMENT` с уникальным ограничением на столбец `NAME`, внешним ключом и индексом на `HR_MANAGER_ID` Studio не сгенерирует - его нужно написать вручную, как показано в разделе xref:simple-crud.adoc#run-app[Запуск приложения] предыдущей главы.
-====
+В выводе появятся строки обо всех четырех изменениях:
+
+[source]
+----
+Table DEPARTMENT created
+Unique constraint added to DEPARTMENT(NAME)
+Index IDX_DEPARTMENT_HR_MANAGER created
+Foreign key constraint added to DEPARTMENT (HR_MANAGER_ID)
+----
 
 Откройте `++http://localhost:8080++` в вашем веб-браузере и войдите в приложение с учетными данными администратора (`admin` / `admin`).
 
