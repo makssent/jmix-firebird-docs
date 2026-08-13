@@ -149,17 +149,56 @@ image::simple-crud/create-screens-8.png[align="center",width="1110"]
 
 После создания сущности и CRUD-экранов для нее вы можете запустить приложение, чтобы увидеть новую функциональность в действии.
 
-Запустите приложение из консоли, как вы делали в xref:project-setup.adoc#run-app[предыдущей главе]:
+Но сначала для новой сущности нужно создать таблицу в базе данных.
+
+Для СУБД, которые Jmix поддерживает штатно, этот шаг выполняется сам: перед запуском Studio сравнивает модель данных со схемой базы и генерирует Liquibase changelog для недостающих объектов. С Firebird так не выйдет - автогенерация недоступна, и скрипт придется написать вручную.
+
+Создайте файл `020-create-step.xml` в каталоге `src/main/resources/com/company/onboarding/liquibase/changelog`:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="onboarding">
+        <createTable tableName="STEP">
+            <column name="ID" type="${uuid.type}">
+                <constraints primaryKey="true" primaryKeyName="PK_STEP" nullable="false"/>
+            </column>
+            <column name="VERSION" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DURATION" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SORT_VALUE" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
+----
+
+Таблица повторяет сущность `Step`: по колонке на каждый атрибут, все объявлены `nullable="false"`, как и поля класса.
+
+Отдельного внимания заслуживает тип колонки `ID`. Вместо конкретного типа здесь стоит свойство `${uuid.type}`, значение которого объявляет changelog аддона, подключенный в xref:project-setup.adoc#firebird-liquibase[настройке проекта]. Для Firebird оно раскроется в `varchar(36)`, поскольку отдельного типа UUID в этой СУБД нет.
+
+Подключать файл отдельно не нужно: главный changelog включает каталог целиком через `includeAll`. Скрипты выполняются в алфавитном порядке имен, поэтому числовой префикс задает очередность - `020-create-step.xml` отработает после `010-init-user.xml`.
+
+Теперь запустите приложение из консоли, как вы делали в xref:project-setup.adoc#run-app[предыдущей главе]:
 
 [source,bash]
 ----
 ./gradlew bootRun
 ----
-
-[WARNING]
-====
-Studio не сгенерирует скрипт Liquibase для новой таблицы `STEP`: с Firebird автогенерация не работает. Скрипт нужно написать вручную до запуска приложения, иначе оно поднимется, а при открытии экрана `Step.list` вы получите ошибку `Table unknown; STEP`.
-====
 
 Скрипты Liquibase выполняются при старте приложения. В выводе команды появится строка о создании таблицы:
 
