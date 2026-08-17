@@ -153,7 +153,7 @@ image::simple-crud/create-screens-8.png[align="center",width="1110"]
 
 Для СУБД, которые Jmix поддерживает штатно, этот шаг выполняется сам: перед запуском Studio сравнивает модель данных со схемой базы и генерирует Liquibase changelog для недостающих объектов. С Firebird так не выйдет - автогенерация недоступна, и скрипт придется написать вручную.
 
-Создайте файл `020-create-step.xml` в каталоге `src/main/resources/com/company/onboarding/liquibase/changelog`:
+Создайте файл `020-create-step.xml` - в разделе *Data Stores* -> *Main Data Store* -> *Liquibase: changelog.xml* окна инструментов *Jmix*, либо в каталоге `src/main/resources/com/company/onboarding/liquibase/changelog` в дереве проекта:
 
 [source,xml]
 ----

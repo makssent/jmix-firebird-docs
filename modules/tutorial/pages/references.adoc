@@ -144,8 +144,11 @@ Studio сгенерирует два экрана: `Department.list` и `Departm
 
 Как и в xref:simple-crud.adoc#run-app[предыдущей главе], таблицу для новой сущности придется описать самостоятельно: для поддерживаемых СУБД Studio сгенерировала бы changelog перед запуском, а с Firebird автогенерация недоступна.
 
-Создайте файл `030-create-department.xml` в каталоге `src/main/resources/com/company/onboarding/liquibase/changelog`:
+Создайте файл `030-create-department.xml` - в разделе *Data Stores* -> *Main Data Store* -> *Liquibase: changelog.xml* окна инструментов *Jmix*, либо в каталоге `src/main/resources/com/company/onboarding/liquibase/changelog` в дереве проекта. Он должен создавать таблицу `DEPARTMENT` с уникальным ограничением на столбец `NAME`, индексом по столбцу внешнего ключа и внешним ключом на таблицу `USER_`.
 
+.Готовый конфиг
+[%collapsible]
+====
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
@@ -192,27 +195,18 @@ Studio сгенерирует два экрана: `Department.list` и `Departm
 </databaseChangeLog>
 ----
 
-Здесь четыре changeset вместо одного: таблица, уникальное ограничение, индекс по столбцу внешнего ключа и сам внешний ключ. Так Liquibase применит изменения по частям, и если одно из них не пройдет, остальные останутся в силе.
+Четыре changeset: таблица, уникальное ограничение, индекс по столбцу внешнего ключа и сам внешний ключ. Так Liquibase применит изменения по частям, и если одно из них не пройдет, остальные останутся в силе.
 
 Имена ограничения и индекса взяты из аннотаций сущности - это те самые `IDX_DEPARTMENT_UNQ_NAME` и `IDX_DEPARTMENT_HR_MANAGER`, которые вы задали в дизайнере. Переименовывать их не стоит: по имени ограничения Jmix находит сообщение, которым заменяет системную ошибку базы данных. Как это работает, показано в разделе xref:references.adoc#change-unique-constraint-message[Изменение уникального сообщения о нарушении ограничений].
 
 Столбец `HR_MANAGER_ID` объявлен без ограничения `nullable`, поскольку ссылка `hrManager` необязательная. Тип столбца тот же `${uuid.type}`, что и у первичного ключа: внешний ключ должен совпадать по типу с колонкой, на которую ссылается.
+====
 
 Теперь запустите приложение из консоли:
 
 [source,bash]
 ----
 ./gradlew bootRun
-----
-
-В выводе появятся строки обо всех четырех изменениях:
-
-[source]
-----
-Table DEPARTMENT created
-Unique constraint added to DEPARTMENT(NAME)
-Index IDX_DEPARTMENT_HR_MANAGER created
-Foreign key constraint added to DEPARTMENT (HR_MANAGER_ID)
 ----
 
 Откройте `++http://localhost:8080++` в вашем веб-браузере и войдите в приложение с учетными данными администратора (`admin` / `admin`).
