@@ -75,7 +75,53 @@ Studio добавит атрибут `department` в компонент `dataGri
 
 TIP: Экраны будут работать и без включения `department` в фетч-план благодаря загрузке связанных сущностей по требованию (_lazy loading_). Но в этом случае ссылки будут загружаться отдельными запросами к базе данных. Отложенная загрузка может повлиять на производительность экрана просмотра, потому что сначала экран загружает список пользователей первым запросом, а после этого выполняет отдельные запросы для загрузки отдела каждого пользователя в списке (проблема N+1 запросов).
 
-Давайте запустим приложение и посмотрим на новый атрибут в действии.
+Перед запуском приложения - напишите Liquibase-конфиг для нового атрибута.
+
+Создайте файл `050-add-user-department.xml` - в разделе *Data Stores* -> *Main Data Store* -> *Liquibase: changelog.xml* окна инструментов *Jmix*, либо в каталоге `src/main/resources/com/company/onboarding/liquibase/changelog` в дереве проекта. Он должен добавлять в таблицу `USER_` столбец `DEPARTMENT_ID`, индекс по нему и внешний ключ на таблицу `DEPARTMENT`.
+
+.Готовый конфиг
+[%collapsible]
+====
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="onboarding">
+        <addColumn tableName="USER_">
+            <column name="DEPARTMENT_ID" type="${uuid.type}"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="2" author="onboarding">
+        <createIndex indexName="IDX_USER__DEPARTMENT" tableName="USER_">
+            <column name="DEPARTMENT_ID"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="3" author="onboarding">
+        <addForeignKeyConstraint baseColumnNames="DEPARTMENT_ID"
+                                 baseTableName="USER_"
+                                 constraintName="FK_USER__ON_DEPARTMENT"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="DEPARTMENT"/>
+    </changeSet>
+
+</databaseChangeLog>
+----
+
+Три changeset: столбец, индекс и внешний ключ. Разбиение то же, что и в xref:references.adoc#run-app[главе про отделы], только таблица здесь уже существует, поэтому вместо `createTable` используется `addColumn`.
+
+Имя индекса `IDX_USER__DEPARTMENT` взято из аннотации `@Table` сущности `User` - Studio дописала его туда, когда вы создавали ссылочный атрибут. Тип столбца тот же `${uuid.type}`, что и у первичного ключа `DEPARTMENT`: внешний ключ должен совпадать по типу с колонкой, на которую ссылается.
+
+Ограничение `nullable` не задано - отдел у пользователя необязателен, и у уже заведенных пользователей столбец останется пустым.
+====
+
+Теперь давайте запустим приложение и посмотрим на новый атрибут в действии.
 
 Запустите приложение из консоли:
 
@@ -83,11 +129,6 @@ TIP: Экраны будут работать и без включения `depa
 ----
 ./gradlew bootRun
 ----
-
-[WARNING]
-====
-Скрипт Liquibase Studio не сгенерирует - его нужно написать вручную, как показано в разделе xref:simple-crud.adoc#run-app[Запуск приложения] главы про CRUD. Скрипт должен добавлять в таблицу `USER_` столбец `DEPARTMENT_ID`, ограничение внешнего ключа и индекс по этому столбцу.
-====
 
 Откройте `++http://localhost:8080++` в вашем веб-браузере и войдите в приложение с учетными данными администратора (`admin` / `admin`).
 
@@ -268,19 +309,16 @@ image::data-in-ui/data-in-ui-diagram-4.svg[align="center"]
 
 Если ваше приложение запущено, остановите его сочетанием `Ctrl+C` в терминале.
 
-Окройте дизайнер сущности `User` и нажмите кнопку *Add* (image:common/add.svg[]) на панели *Attributes*. В диалоговом окне *New Attribute* введите `steps` в поле *Name*. Затем выберите:
+Откройте `User.java` и добавьте два импорта:
 
-* *Attribute type*: `COMPOSITION`
-* *Type*: `UserStep`
-* *Cardinality*: *One to Many*
+[source,java]
+----
+import io.jmix.core.metamodel.annotation.Composition;
 
-image::data-in-ui/composition-1.png[align="center"]
+import java.util.List;
+----
 
-Обратите внимание, что `user` выбирается автоматически в поле *Mapped by*. Это атрибут сущности `UserStep`, сопоставленный столбцу базы данных, который поддерживает связь между UserSteps и Users (внешний ключ).
-
-Нажмите на кнопку *OK*.
-
-Исходный код атрибута будет иметь аннотацию `@Composition`:
+Добавьте поле после атрибута `department`:
 
 [source,java]
 ----
@@ -289,7 +327,20 @@ image::data-in-ui/composition-1.png[align="center"]
 private List<UserStep> steps;
 ----
 
-Шаги пользователя должны отображаться на экране деталей пользователя, поэтому выберите новый атрибут `steps` и нажмите кнопку *Add to Views* (image:common/add-attribute-to-screens.svg[]) на панели *Attributes*. Выберите `User.detail` и нажмите на кнопку *OK*.
+И геттер с сеттером к нему:
+
+[source,java]
+----
+public List<UserStep> getSteps() {
+    return steps;
+}
+
+public void setSteps(List<UserStep> steps) {
+    this.steps = steps;
+}
+----
+
+Шаги пользователя должны отображаться на экране деталей пользователя, поэтому зайдите в сущность User, выберите новый атрибут `steps` и нажмите кнопку *Add to Views* (image:common/add-attribute-to-screens.svg[]) на панели *Attributes*. Выберите `User.detail` и нажмите на кнопку *OK*.
 
 Студия изменит `user-detail-view.xml` как показано ниже:
 
@@ -322,7 +373,6 @@ private List<UserStep> steps;
             <action id="removeAction" type="list_remove"/>
         </actions>
         <columns>
-            <column property="version"/>
             <column property="dueDate"/>
             <column property="completedDate"/>
             <column property="sortValue"/>
@@ -342,16 +392,16 @@ private List<UserStep> steps;
 ./gradlew bootRun
 ----
 
-[WARNING]
-====
-Скрипт Liquibase Studio не сгенерирует - его нужно написать вручную, как показано в разделе xref:simple-crud.adoc#run-app[Запуск приложения] главы про CRUD. Скрипт должен создавать таблицу `USER_STEP` с ограничениями внешнего ключа и индексами для ссылок на `USER_` и `STEP`.
-====
-
 Откройте `++http://localhost:8080++` в вашем веб-браузере и войдите в приложение с учетными данными администратора (`admin` / `admin`).
 
 Откройте экран деталей пользователя. Вы увидите таблицу *Steps*, отображающую сущности `UserStep`:
 
 image::data-in-ui/composition-2.png[align="center"]
+
+[NOTE,caption=Примечание]
+====
+Если вы используете Studio 3.0, то у вас будет отсутствовать колонка version. Атрибут `@Version` считается служебным и в генерируемые экраны не попадает. Сущность при этом остается versioned - номер версии по-прежнему хранится в базе и используется для оптимистичной блокировки, просто пользователю он не показывается.
+====
 
 Если вы нажмете *Create* в таблице *Steps*, вы получите исключение, сообщающее: `View 'UserStep.detail' is not defined`. Это правда - вы не создавали экран деталей для сущности `UserStep`. Но на самом деле это и не нужно, потому что экземпляры `UserStep` должны быть сгенерированы из предопределенных экземпляров сущности `Step` для конкретного пользователя.
 
@@ -379,6 +429,36 @@ image::data-in-ui/joining-date-1.png[align="center"]
 
 Выберите ранее созданный атрибут `joiningDate` и нажмите кнопку *Add to Views* (image:common/add-attribute-to-screens.svg[]) на панели *Attributes*. Выберите оба экрана `User.detail` и `User.list` в появившемся диалоговом окне и нажмите *OK*.
 
+Перед запуском приложения - напишите Liquibase-конфиг для нового атрибута.
+
+Создайте файл `060-add-user-joining-date.xml` - в разделе *Data Stores* -> *Main Data Store* -> *Liquibase: changelog.xml* окна инструментов *Jmix*, либо в каталоге `src/main/resources/com/company/onboarding/liquibase/changelog` в дереве проекта. Он должен добавлять в таблицу `USER_` столбец `JOINING_DATE`.
+
+.Готовый конфиг
+[%collapsible]
+====
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="onboarding">
+        <addColumn tableName="USER_">
+            <column name="JOINING_DATE" type="date"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>
+----
+
+Один changeset с `addColumn` - таблица `USER_` уже есть, добавить нужно только столбец.
+
+Тип столбца - `date`, потому что атрибут объявлен как `LocalDate`: в нем хранится только дата, без времени. Ограничение `nullable` не задано - дата приема необязательна, и у заведенных ранее пользователей столбец останется пустым.
+====
+
 Запустите приложение из консоли:
 
 [source,bash]
@@ -386,27 +466,55 @@ image::data-in-ui/joining-date-1.png[align="center"]
 ./gradlew bootRun
 ----
 
-[WARNING]
-====
-Скрипт Liquibase Studio не сгенерирует - его нужно написать вручную, как показано в разделе xref:simple-crud.adoc#run-app[Запуск приложения] главы про CRUD. Скрипт должен добавлять в таблицу `USER_` столбец `JOINING_DATE`.
-====
-
 Откройте `++http://localhost:8080++` в вашем веб-браузере, войдите в приложение и убедитесь, что новый атрибут отображается на экранах списка и деталей пользователя.
+
+image::data-in-ui/joining-date-2.png[align="center", width="869"]
 
 [[custom-button]]
 === Добавление пользовательской кнопки
 
 Теперь вам нужно удалить стандартные действия и кнопки для управления шагами пользователя и добавить кнопку для запуска пользовательской логики создания сущностей.
 
-Откройте `user-detail-view.xml` и удалите элемент `actions` из таблицы и все элементы `button` из `hbox`:
+Откройте `user-detail-view.xml` и удалите из него два фрагмента.
+
+Первый - кнопки внутри `hbox` с идентификатором `stepsButtonsPanel`:
 
 [source,xml]
 ----
-<hbox id="buttonsPanel" classNames="buttons-panel">
+<button action="stepsDataGrid.createAction"/>
+<button action="stepsDataGrid.editAction"/>
+<button action="stepsDataGrid.removeAction"/>
+----
+
+Второй - элемент `actions` целиком внутри `stepsDataGrid`:
+
+[source,xml]
+----
+<actions>
+    <action id="createAction" type="list_create">
+        <properties>
+            <property name="openMode" value="DIALOG"/>
+        </properties>
+    </action>
+    <action id="editAction" type="list_edit">
+        <properties>
+            <property name="openMode" value="DIALOG"/>
+        </properties>
+    </action>
+    <action id="removeAction" type="list_remove"/>
+</actions>
+----
+
+Кнопки в `hbox` с идентификатором `detailActions` не трогайте: *Save and close* и *Close* относятся к самому экрану пользователя, а не к гриду шагов.
+
+Должно получиться так - пустая панель и таблица с одними колонками:
+
+[source,xml]
+----
+<hbox id="stepsButtonsPanel" wrap="true" width="100%">
 </hbox>
 <dataGrid id="stepsDataGrid" dataContainer="stepsDc" width="100%" height="100%">
     <columns>
-        <column property="version"/>
         <column property="dueDate"/>
         <column property="completedDate"/>
         <column property="sortValue"/>
@@ -414,7 +522,9 @@ image::data-in-ui/joining-date-1.png[align="center"]
 </dataGrid>
 ----
 
-Затем выберите `buttonsPanel` в панели структуры *Jmix UI* и нажмите на кнопку *Add Component* в контекстном меню узла. Выберите компонент `Button` в палитре и добавьте его в экран двойным кликом. Затем выберите созданный элемент `button` и в панели инспектора укажите свойству `id` значение `generateButton`, а свойству `text` - значение `Generate`. После этого перейдите на вкладку *Handlers* и создайте метод обработчика `ClickEvent`:
+Затем выберите `stepsButtonsPanel` в панели структуры *Jmix UI* и нажмите на кнопку *Add Component* в контекстном меню узла. Выберите компонент `Button` в палитре и добавьте его в экран двойным кликом. Затем выберите созданный элемент `button` и в панели инспектора укажите свойству `id` значение `generateButton`, а свойству `text` - значение `Generate`. После этого перейдите на вкладку *Handlers* и создайте метод обработчика `ClickEvent`:
+
+image::data-in-ui/button-1.png[align="center", width="520"]
 
 Нажмите *Ctrl/Cmd+S* и переключитесь на запущенное приложение. Обновите экран деталей пользователя и убедитесь, что вместо стандартных CRUD-кнопок отображается кнопка *Generate*:
 
@@ -443,7 +553,7 @@ public class UserDetailView extends StandardDetailView<User> {
 
 [TIP]
 ====
-If you copy the fields above and paste them to the source code, IDE will highlight them as errors because you also need to add `import` statements for the classes. Place the cursor on each error and the IDE will suggest you an appropriate import. If it doesn't, close the editor tab, then open `UserDetailView.java` again.
+Если вы скопируете приведенные выше поля и вставите их в исходный код, IDE подсветит их как ошибки: для этих классов нужно добавить объявления `import`. Поставьте курсор на каждую ошибку, и IDE предложит подходящий импорт. Если этого не произошло, закройте вкладку редактора и снова откройте `UserDetailView.java`.
 ====
 
 [TIP]
