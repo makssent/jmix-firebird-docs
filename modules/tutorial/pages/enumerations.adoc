@@ -69,17 +69,47 @@ Studio добавит атрибут `onboardingStatus` в компонент `d
 [[run-app]]
 == Запуск приложения
 
+Перед запуском приложения - напишите liquibase конфиг для нового атрибута.
+
+Создайте файл `040-add-user-onboarding-status.xml` в каталоге `src/main/resources/com/company/onboarding/liquibase/changelog`. Он должен добавлять в таблицу `USER_` столбец `ONBOARDING_STATUS`.
+
+[NOTE,caption=Примечание]
+====
+Может показаться, что раз новый атрибут добавляется к таблице `USER_`, то и править нужно уже существующий скрипт `010-init-user.xml`, который эту таблицу создает. Но это не так.
+
+Выполнив changeset, Liquibase запоминает его в служебной таблице `DATABASECHANGELOG` вместе с контрольной суммой. Если изменить тело уже выполненного changeset, сумма перестанет совпадать и приложение не запустится - Liquibase сообщит об ошибке валидации. При этом сам столбец все равно не появится: changeset помечен как выполненный и повторно не запускается. Правка сработала бы только на пустой базе, созданной с нуля.
+
+История изменений в Liquibase неизменяема, а схема наращивается новыми changeset. Для поддерживаемых СУБД Studio поступает так же: на каждое изменение модели данных она генерирует новый файл, а не переписывает старые.
+====
+
+.Готовый скрипт
+[%collapsible]
+====
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="onboarding">
+        <addColumn tableName="USER_">
+            <column name="ONBOARDING_STATUS" type="int"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>
+----
+====
+
 Запустите приложение из консоли:
 
 [source,bash]
 ----
 ./gradlew bootRun
 ----
-
-[WARNING]
-====
-Скрипт Liquibase Studio не сгенерирует - его нужно написать вручную, как показано в разделе xref:simple-crud.adoc#run-app[Запуск приложения] главы про CRUD. Скрипт должен добавлять в таблицу `USER_` столбец `ONBOARDING_STATUS` типа `INT`, который соответствует типу `Integer` идентификатора перечисления.
-====
 
 Откройте `++http://localhost:8080++` в вашем веб-браузере и войдите в приложение с учетными данными администратора (`admin` / `admin`).
 
