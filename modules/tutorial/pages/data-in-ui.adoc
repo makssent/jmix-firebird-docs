@@ -292,6 +292,91 @@ image::data-in-ui/data-in-ui-diagram-3.svg[align="center"]
 
 image::data-in-ui/create-user-step-1.png[align="center"]
 
+Далее напишите Liquibase-конфиг для новой сущности UserStep.
+
+Создайте файл `055-create-user-step.xml` - в разделе *Data Stores* -> *Main Data Store* -> *Liquibase: changelog.xml* окна инструментов *Jmix*, либо в каталоге `src/main/resources/com/company/onboarding/liquibase/changelog` в дереве проекта. Он должен создавать таблицу `USER_STEP` с индексами по обоим столбцам внешних ключей и самими внешними ключами на таблицы `USER_` и `STEP`.
+
+.Готовый конфиг
+[%collapsible]
+====
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="onboarding">
+        <createTable tableName="USER_STEP">
+            <column name="ID" type="${uuid.type}">
+                <constraints primaryKey="true" primaryKeyName="PK_USER_STEP" nullable="false"/>
+            </column>
+            <column name="VERSION" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="USER_ID" type="${uuid.type}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STEP_ID" type="${uuid.type}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DUE_DATE" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COMPLETED_DATE" type="date"/>
+            <column name="SORT_VALUE" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="onboarding">
+        <createIndex indexName="IDX_USER_STEP_USER" tableName="USER_STEP">
+            <column name="USER_ID"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="3" author="onboarding">
+        <createIndex indexName="IDX_USER_STEP_STEP" tableName="USER_STEP">
+            <column name="STEP_ID"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="4" author="onboarding">
+        <addForeignKeyConstraint baseColumnNames="USER_ID"
+                                 baseTableName="USER_STEP"
+                                 constraintName="FK_USER_STEP_ON_USER"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="USER_"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="5" author="onboarding">
+        <addForeignKeyConstraint baseColumnNames="STEP_ID"
+                                 baseTableName="USER_STEP"
+                                 constraintName="FK_USER_STEP_ON_STEP"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="STEP"/>
+    </changeSet>
+
+</databaseChangeLog>
+----
+
+Пять changeset: таблица, два индекса и два внешних ключа. Разбиение то же, что и в xref:references.adoc#run-app[главе про отделы], только ссылок здесь две - на пользователя и на шаг.
+
+Столбцы `USER_ID` и `STEP_ID` объявлены с `nullable="false"`: обе ссылки обязательные, у шага пользователя не может не быть ни владельца, ни шага. Имена индексов взяты из аннотации `@Table` сущности `UserStep`.
+
+Ключ на `USER_` объявлен с `onDelete="CASCADE"` - это отступление от того, что сгенерировала бы Studio, и нужно оно вот зачем. Шаги принадлежат пользователю, поэтому при удалении пользователя должны исчезать вместе с ним. Иначе база не даст удалить строку, на которую они ссылаются, и вы получите ошибку `violation of FOREIGN KEY constraint`.
+
+Может показаться, что об этом должна позаботиться платформа: в Jmix есть аннотация `@OnDelete(DeletePolicy.CASCADE)`, которую ставят на атрибут-коллекцию. Но применяется она только к сущностям с мягким удалением - у которых есть атрибуты `@DeletedDate` и `@DeletedBy`. У `User` из шаблона проекта их нет, удаление жесткое, и аннотация не сработает. Поэтому каскад задается на уровне схемы.
+
+Ключ на `STEP` оставлен без каскада намеренно. Шаг онбординга - справочная запись, общая для всех пользователей, и удалять ее вместе с чужим прогрессом нельзя. Здесь правильнее получить отказ от базы.
+
+Числовой префикс `055` ставит скрипт между `050-add-user-department.xml` и `060-add-user-joining-date.xml`. Промежуточные номера здесь удобны: порядок выполнения задают имена файлов, и оставленные в нумерации промежутки позволяют вставлять новые скрипты, не переименовывая старые.
+====
+
 [[composition-attr]]
 == Добавление атрибута-композиции
 
