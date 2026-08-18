@@ -35,17 +35,42 @@ Studio создаст компонент `pictureField` в форме экран
 </formLayout>
 ----
 
+Перед запуском приложения - напишите Liquibase-конфиг для нового атрибута.
+
+Создайте файл `070-add-user-picture.xml` - в разделе *Data Stores* -> *Main Data Store* -> *Liquibase: changelog.xml* окна инструментов *Jmix*, либо в каталоге `src/main/resources/com/company/onboarding/liquibase/changelog` в дереве проекта. Он должен добавлять в таблицу `USER_` столбец `PICTURE`.
+
+.Готовый конфиг
+[%collapsible]
+====
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="onboarding">
+        <addColumn tableName="USER_">
+            <column name="PICTURE" type="varchar(1024)"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>
+----
+
+Один changeset с `addColumn` - таблица `USER_` уже есть, добавить нужно только столбец.
+
+Тип столбца - `varchar(1024)`, по длине из аннотации `@Column`. Само изображение в базе не хранится: в колонке лежит `FileRef` - строковая ссылка на файл в файловом хранилище, а хранилище представляет собой каталог на диске. Ограничение `nullable` не задано - изображение необязательно.
+====
+
 Запустите приложение из консоли:
 
 [source,bash]
 ----
 ./gradlew bootRun
 ----
-
-[WARNING]
-====
-Скрипт Liquibase Studio не сгенерирует - его нужно написать вручную, как показано в разделе xref:simple-crud.adoc#run-app[Запуск приложения] главы про CRUD. Скрипт должен добавлять в таблицу `USER_` столбец `PICTURE` типа `VARCHAR(1024)`: ссылка на файл хранится как строка.
-====
 
 Откройте `++http://localhost:8080++` в вашем веб-браузере и войдите в приложение с учетными данными администратора (`admin` / `admin`).
 
