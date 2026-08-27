@@ -17,6 +17,6 @@ asciidoc:
     java_api_url: 'https://docs.jmix.io/api'
     jmix-docs: 'https://docs.jmix.io/jmix'
     addon-group: 'io.github.makssent'
-    addon-version: '0.1.0'
+    addon-version: '3.0.0'
     jaybird-version: '6.0.5'
     page-pagination: true
