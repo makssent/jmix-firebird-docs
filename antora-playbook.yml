@@ -1,0 +1,13 @@
+site:
+  title: Jmix и Firebird
+  start_page: jmix-firebird:firebird:overview.adoc
+content:
+  sources:
+    - url: ./
+      branches: HEAD
+      start_path: .
+ui:
+  bundle:
+    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/master/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: true
+  supplemental_files: ./supplemental-ui
