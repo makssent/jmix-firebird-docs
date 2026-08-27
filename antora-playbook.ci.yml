@@ -4,7 +4,7 @@ site:
 content:
   sources:
     - url: https://github.com/makssent/jmix-firebird-docs.git
-      branches: release_firebird_3.0_en
+      branches: release_firebird_3.0
       start_path: .
 ui:
   bundle:
