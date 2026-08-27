@@ -4,7 +4,7 @@ This repository contains documentation for using Firebird with Jmix 3.0 applicat
 
 The documentation is maintained in two language branches:
 
-* `release_firebird_3.0_en` — English;
+* `release_firebird_3.0` — English;
 * `release_firebird_3.0_ru` — Russian.
 
 Both branches use the same Antora component, module structure, page paths, and navigation targets.
