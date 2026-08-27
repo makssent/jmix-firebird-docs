@@ -1,8 +1,70 @@
 = Ограничения Firebird
 
-Здесь будет описано, чего не умеет Jmix и Jmix Studio при работе с Firebird, чтобы вы могли оценить, подходит ли эта СУБД вашему проекту.
+В этом разделе собраны известные ограничения и особенности работы Firebird с Jmix, обнаруженные в ходе практического использования. Описанные ниже моменты были выявлены при работе с реальным проектом `jmix-crm` на Firebird и при прохождении самоучителя.
 
-[NOTE]
+Хотя тесты `jmix-crm`, запущенные с Firebird, не выявили дополнительных ограничений, нельзя исключать существование других особенностей или ограничений, которые пока не проявились в рассмотренных сценариях и могут быть обнаружены при дальнейшем использовании Firebird с Jmix.
+
+[[changelog-generation]]
+== Автогенерация Liquibase changelog
+
+Основное выявленное ограничение — автоматическая генерация Liquibase changelog для Firebird не работает. После изменения модели данных необходимые changeset-ы приходится создавать вручную.
+
+Поддержку Firebird как основной базы данных предлагалось добавить непосредственно в Jmix в https://github.com/jmix-framework/jmix/pull/5532[PR #5532^]. Команда Jmix не приняла PR из-за затрат на дальнейшее сопровождение дополнительной СУБД и предложила реализовать поддержку в виде аддона.
+
+В результате поддержка Firebird реализована в отдельном `jmix-firebird-addon`, а не в основном проекте Jmix. Аддон обеспечивает работу приложения с Firebird, но автоматическая генерация changelog для Firebird остаётся недоступной. Созданные вручную changelog-и применяются при запуске приложения.
+
+[TIP]
 ====
-Раздел в работе.
+Пример создания Liquibase changelog можно посмотреть в xref:tutorial:data-in-ui.adoc#joining-date-attr[разделе самоучителя о добавлении атрибута joiningDate]. В нём приведены инструкции по созданию changelog с одним changeset и описаны внесённые изменения.
+
+Более подробно процесс создания Liquibase changelog описан в отдельном разделе xref:liquibase-changelog.adoc[Создание Liquibase changelog].
 ====
+
+[[third-party-support]]
+== Поддержка Firebird в сторонних библиотеках
+
+Liquibase и EclipseLink уже содержат поддержку Firebird. Например, EclipseLink предоставляет отдельную https://eclipse.dev/eclipselink/api/4.0/org.eclipse.persistence.core/org/eclipse/persistence/platform/database/FirebirdPlatform.html[платформу Firebird^]. Однако часть этой поддержки исторически создавалась для старых версий Firebird. Проверки и ограничения сторонних библиотек не всегда учитывают возможности современных версий СУБД.
+
+Это не означает, что все такие ограничения проявляются в Jmix-приложении. Но если несовместимость воспроизводится в Liquibase, EclipseLink или другой зависимости, предпочтительно исправлять её в соответствующем upstream-проекте, а не превращать обходное решение в постоянную часть `jmix-firebird-addon`.
+
+[[sequence-start-value]]
+=== Пример: createSequence и startValue
+
+При создании sequence Liquibase запрещал атрибут `startValue` для Firebird независимо от версии базы данных. Такой changeset:
+
+[source,xml]
+----
+<createSequence sequenceName="CRM_PAYMENT_NUMBER" startValue="1000"/>
+----
+
+завершался ошибкой:
+
+[source]
+----
+startValue is not allowed on firebird
+----
+
+Для Firebird 4.0 и новее это ограничение уже неактуально. В `jmix-crm-firebird` для запуска проекта применён временный workaround: обычный changeset исключает Firebird, а отдельный Firebird-changeset создаёт sequence без `startValue` и затем устанавливает начальное значение SQL-командой:
+
+[source,xml]
+----
+<changeSet id="1" author="crm" dbms="!firebird">
+    <createSequence sequenceName="CRM_PAYMENT_NUMBER" startValue="1000"/>
+</changeSet>
+
+<changeSet id="2" author="crm" dbms="firebird">
+    <createSequence sequenceName="CRM_PAYMENT_NUMBER"/>
+    <sql>ALTER SEQUENCE CRM_PAYMENT_NUMBER RESTART WITH 1000</sql>
+</changeSet>
+----
+
+Полный пример можно посмотреть в https://github.com/makssent/jmix-crm-firebird/commit/724d0a46f18aa9188a7e847e03fedf2fb74456f9[коммите проекта jmix-crm-firebird^].
+
+Исправление отправлено непосредственно в Liquibase: https://github.com/liquibase/liquibase/pull/7922[PR #7922^] делает поддержку `startValue` и `incrementBy` зависимой от версии Firebird. Для версий ниже 4.0 ограничения сохраняются, а для Firebird 4.0 и новее снимаются.
+
+[[temporary-workarounds]]
+== Временные workaround-ы
+
+Пока исправление не вошло в релиз сторонней библиотеки, локальный workaround можно применить по аналогии с `jmix-crm-firebird`. Такое решение следует рассматривать как временное и добавлять только для подтверждённой несовместимости используемой версии зависимости.
+
+После обновления до версии Liquibase, EclipseLink или другой библиотеки, в которой исправлена конкретная несовместимость с используемой версией Firebird, workaround следует удалить. Он не является обязательной архитектурной частью интеграции Firebird с Jmix.

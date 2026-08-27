@@ -1,8 +1,9 @@
 name: jmix-firebird
 title: Jmix и Firebird
 version: master
-start_page: tutorial:index.adoc
+start_page: firebird:overview.adoc
 nav:
+  - modules/ROOT/partials/nav.adoc
   - modules/tutorial/partials/nav.adoc
   - modules/firebird/partials/nav.adoc
 asciidoc:

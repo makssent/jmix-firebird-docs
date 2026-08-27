@@ -1,3 +1,5 @@
 * Работа с Firebird
 ** xref:firebird:index.adoc[]
+** xref:firebird:liquibase-changelog.adoc[]
 ** xref:firebird:limitations.adoc[]
+* xref:firebird:migration.adoc[Пример переноса приложения на Firebird]
