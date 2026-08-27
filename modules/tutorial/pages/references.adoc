@@ -367,18 +367,18 @@ image::references/customize-ui-9.png[align="center"]
 
 Вы узнали, что:
 
-* Studio помогает создавать ссылочные атрибуты и генерирует xref:data-model:db-migration.adoc[Liquibase changelog] с внешним ключом и индексом.
+* Studio помогает создавать ссылочные атрибуты и генерирует {jmix-docs}/data-model/db-migration.html[Liquibase changelog^] с внешним ключом и индексом.
 
-* Чтобы показать ссылочный атрибут на экране списка или деталей, он должен быть включен в xref:data-access:fetching.adoc#fetch-plan[фетч-план] экрана.
+* Чтобы показать ссылочный атрибут на экране списка или деталей, он должен быть включен в {jmix-docs}/data-access/fetching.html#fetch-plan[фетч-план^] экрана.
 
-* xref:data-model:entities.adoc#instance-name[Имя экземпляра] используется для отображения ссылки в пользовательском интерфейсе.
+* {jmix-docs}/data-model/entities.html#instance-name[Имя экземпляра^] используется для отображения ссылки в пользовательском интерфейсе.
 
-* Компонент выбора сущности (xref:flow-ui:vc/components/entityPicker.adoc[]) используется по умолчанию для выбора связанной сущности в сгенерированном экране редактирования.
+* Компонент выбора сущности ({jmix-docs}/flow-ui/vc/components/entityPicker.html[EntityPicker^]) используется по умолчанию для выбора связанной сущности в сгенерированном экране редактирования.
 
-* xref:data-model:entities.adoc#uniqueness[Уникальность атрибутов сущностей] поддерживается на уровне базы данных путем определения ограничений.
+* {jmix-docs}/data-model/entities.html#uniqueness[Уникальность атрибутов сущностей^] поддерживается на уровне базы данных путем определения ограничений.
 
-* Сообщение о xref:flow-ui:exception-handlers.adoc#unique-constraint-violation-handler[нарушении ограничений уникальности] может быть легко кастомизировано.
+* Сообщение о {jmix-docs}/flow-ui/exception-handlers.html#unique-constraint-violation-handler[нарушении ограничений уникальности^] может быть легко кастомизировано.
 
-* Заголовки и сообщения, сгенерированные Studio, хранятся в xref:localization:message-bundles.adoc[пакете сообщений] приложения.
+* Заголовки и сообщения, сгенерированные Studio, хранятся в {jmix-docs}/localization/message-bundles.html[пакете сообщений^] приложения.
 
-* Механизм Studio xref:studio:hot-deploy.adoc[hot deploys] изменяет экраны и сообщения в запущенном приложение, что избавляет от перезапуска приложения при разработке пользовательского интерфейса. Hot deploy не работает для классов сущностей.
+* Механизм Studio {jmix-docs}/studio/hot-deploy.html[hot deploys^] изменяет экраны и сообщения в запущенном приложение, что избавляет от перезапуска приложения при разработке пользовательского интерфейса. Hot deploy не работает для классов сущностей.

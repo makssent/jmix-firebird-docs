@@ -112,4 +112,4 @@ NOTE: Вы можете полагаться на слушателей собы�
 [[summary]]
 == Резюме
 
-Слушатели xref:data-access:entity-events.adoc#entity-changed-event[EntityChangedEvent] могут использоваться для поддержания согласованности данных и выполнения бизнес-логики в текущей xref:data-access:transactions.adoc[транзакции] или после ее завершения.
+Слушатели {jmix-docs}/data-access/entity-events.html#entity-changed-event[EntityChangedEvent^] могут использоваться для поддержания согласованности данных и выполнения бизнес-логики в текущей {jmix-docs}/data-access/transactions.html[транзакции^] или после ее завершения.

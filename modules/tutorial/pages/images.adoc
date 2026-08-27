@@ -228,8 +228,8 @@ image::images/table-3.png[]
 
 Вы узнали, что:
 
-* xref:files:uploading-files.adoc[Загруженные файлы] могут храниться в xref:files:file-storage.adoc[файловом хранилище] и связываться с сущностями с использованием атрибутов типа `FileRef`.
+* {jmix-docs}/files/uploading-files.html[Загруженные файлы^] могут храниться в {jmix-docs}/files/file-storage.html[файловом хранилище^] и связываться с сущностями с использованием атрибутов типа `FileRef`.
 
-* Компонент xref:flow-ui:vc/components/fileStorageUploadField.adoc[] позволяет загружать файлы, сохранять их в хранилище файлов и связывать с атрибутом сущности.
+* Компонент {jmix-docs}/flow-ui/vc/components/fileStorageUploadField.html[FileStorageUploadField^] позволяет загружать файлы, сохранять их в хранилище файлов и связывать с атрибутом сущности.
 
-* Компонент xref:flow-ui:vc/html-components/image.adoc[] может отображать изображения, сохраненные в файловом хранилище.
+* Компонент {jmix-docs}/flow-ui/vc/html-components/image.html[Image^] может отображать изображения, сохраненные в файловом хранилище.

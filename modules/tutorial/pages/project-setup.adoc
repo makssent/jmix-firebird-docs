@@ -60,7 +60,7 @@ image::project-setup/sign-in-dialog.png[align="center",width="496"]
 
 Нажмите на кнопку *Sign In / Register*. Вы будете перенаправлены в системный браузер.
 
-image::ROOT:store/login-form.png[align="center",width="1549"]
+image::https://raw.githubusercontent.com/jmix-framework/jmix-docs/release_3_ru/content/modules/ROOT/images/store/login-form.png[align="center",width="1549"]
 
 * Если у вас нет учетной записи Jmix, нажмите на ссылку *Register*. В регистрационной форме заполните поля *First name*, *Last name*, *Email* и *Password*, примите политику конфиденциальности и нажмите на кнопку *Register*.
 +
@@ -103,7 +103,7 @@ image::project-setup/explore-project-1.png[align="center",width="758"]
 +
 image::project-setup/explore-project-2.png[align="center",width="1191"]
 +
-Класс `OnboardingSecurityConfiguration` дополняет стандартные конфигурации безопасности, предоставляемые модулями Jmix. Вы можете настроить безопасность xref:security:custom-endpoints.adoc[кастомных эндпойнтов], определив в этом классе бины  `SecurityFilterChain`.
+Класс `OnboardingSecurityConfiguration` дополняет стандартные конфигурации безопасности, предоставляемые модулями Jmix. Вы можете настроить безопасность {jmix-docs}/security/custom-endpoints.html[кастомных эндпойнтов^], определив в этом классе бины  `SecurityFilterChain`.
 
 * В разделе *Add-ons* отображается список установленных дополнений Jmix:
 +
@@ -334,7 +334,7 @@ image::project-setup/run-app-6.png[align="center"]
 Вы узнали, что:
 
 * Jmix Studio - это плагин для IntelliJ IDEA.
-* В самоучителе предполагается, что у вас есть коммерческая или пробная xref:studio:subscription.adoc[подписка] для Jmix Studio. Пробная подписка активируется при первом входе в учетную запись Jmix.
+* В самоучителе предполагается, что у вас есть коммерческая или пробная {jmix-docs}/studio/subscription.html[подписка^] для Jmix Studio. Пробная подписка активируется при первом входе в учетную запись Jmix.
 * В студии есть мастер для создания новых проектов по шаблонам.
 * Studio показывает структуру проекта в окне инструментов *Jmix*.
 * Новый проект содержит функциональность для входа в приложение и управления пользователями.

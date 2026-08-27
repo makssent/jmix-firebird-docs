@@ -916,26 +916,26 @@ private void updateOnboardingStatus() {
 
 Вы узнали, что:
 
-* Ссылочные атрибуты должны быть добавлены в xref:data-access:fetching.adoc#fetch-plan[фетч-план] экрана, чтобы избежать проблемы N+1 запросов.
+* Ссылочные атрибуты должны быть добавлены в {jmix-docs}/data-access/fetching.html#fetch-plan[фетч-план^] экрана, чтобы избежать проблемы N+1 запросов.
 
-* Компонент xref:flow-ui:vc/components/entityComboBox.adoc[] можно использовать для выбора связанной сущности из выпадающего списка. Для этого компонента требуется xref:flow-ui:data/collection-container.adoc[контейнер коллекции], содержащий элементы списка (опции). Он должен должен быть установлен в `itemsContainer` компонента.
+* Компонент {jmix-docs}/flow-ui/vc/components/entityComboBox.html[EntityComboBox^] можно использовать для выбора связанной сущности из выпадающего списка. Для этого компонента требуется {jmix-docs}/flow-ui/data/collection-container.html[контейнер коллекции^], содержащий элементы списка (опции). Он должен должен быть установлен в `itemsContainer` компонента.
 
-* Взаимосвязь между сущностями `User` и `UserStep` является примером _композиции_, когда экземпляры связанной сущности (`UserStep`) могут существовать только как часть ее владельца (`User`). Такая ссылка помечается аннотацией xref:data-model:entities.adoc#composition[@Composition].
+* Взаимосвязь между сущностями `User` и `UserStep` является примером _композиции_, когда экземпляры связанной сущности (`UserStep`) могут существовать только как часть ее владельца (`User`). Такая ссылка помечается аннотацией {jmix-docs}/data-model/entities.html#composition[@Composition^].
 
 * Коллекцию связанных сущностей можно упорядочить, используя аннотацию `@OrderBy` в ссылочном атрибуте.
 
-* Обработчик событий `ClickEvent` компонента xref:flow-ui:vc/components/button.adoc[] используется для обработки нажатий кнопок. Его можно сгенерировать на вкладке *Handlers* панели инспектора *Jmix UI*.
+* Обработчик событий `ClickEvent` компонента {jmix-docs}/flow-ui/vc/components/button.html[Button^] используется для обработки нажатий кнопок. Его можно сгенерировать на вкладке *Handlers* панели инспектора *Jmix UI*.
 
 * Метод `getEditedEntity()` экрана деталей сущности возвращает редактируемый экземпляр сущности.
 
-* Интерфейс xref:flow-ui:notifications.adoc[Notifications] используется для отображения всплывающих уведомлений.
+* Интерфейс {jmix-docs}/flow-ui/notifications.html[Notifications^] используется для отображения всплывающих уведомлений.
 
-* Интерфейс xref:data-access:data-manager.adoc[DataManager] можно использовать для загрузки данных из базы данных.
+* Интерфейс {jmix-docs}/data-access/data-manager.html[DataManager^] можно использовать для загрузки данных из базы данных.
 
-* Вложенная коллекция связанных сущностей загружается в xref:flow-ui:data/property-containers.adoc[CollectionPropertyContainer]. Его методы `getItems()` и `getMutableItems()` можно использовать для перебора и добавления/удаления элементов в коллекцию.
+* Вложенная коллекция связанных сущностей загружается в {jmix-docs}/flow-ui/data/property-containers.html[CollectionPropertyContainer^]. Его методы `getItems()` и `getMutableItems()` можно использовать для перебора и добавления/удаления элементов в коллекцию.
 
-* xref:flow-ui:data/data-context.adoc[DataContext] отслеживает изменения в сущностях и сохраняет измененные экземпляры в базе данных, когда пользователь нажимает *OK* на экране.
+* {jmix-docs}/flow-ui/data/data-context.html[DataContext^] отслеживает изменения в сущностях и сохраняет измененные экземпляры в базе данных, когда пользователь нажимает *OK* на экране.
 
-* xref:flow-ui:vc/components/dataGrid.adoc[Таблица] UI может иметь колонки, которые отображают произвольные визуальные компоненты.
+* {jmix-docs}/flow-ui/vc/components/dataGrid.html[Таблица^] UI может иметь колонки, которые отображают произвольные визуальные компоненты.
 
-* xref:flow-ui:data/instance-container.adoc#events[ItemPropertyChangeEvent] и xref:flow-ui:data/collection-container.adoc#events[CollectionChangeEvent] можно использовать для реагирования на изменения в объектах, расположенных в контейнерах данных.
+* {jmix-docs}/flow-ui/data/instance-container.html#events[ItemPropertyChangeEvent^] и {jmix-docs}/flow-ui/data/collection-container.html#events[CollectionChangeEvent^] можно использовать для реагирования на изменения в объектах, расположенных в контейнерах данных.

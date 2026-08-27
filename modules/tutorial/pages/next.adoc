@@ -8,7 +8,7 @@
 
 * Ознакомьтесь с https://www.jmix.ru/learn/live-demo/[онлайн-демо^] приложениями.
 
-* Пройдите остальные xref:ROOT:guides.adoc[руководства].
+* Пройдите остальные {jmix-docs}/guides.html[руководства^].
 
 * Ознакомьтесь с примерами из репозитория https://github.com/jmix-framework/jmix-samples-2[Jmix Samples^] на GitHub.
 

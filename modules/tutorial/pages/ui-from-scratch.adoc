@@ -451,13 +451,13 @@ image::ui-from-scratch/theme-4.png[align="center"]
 
 Вы узнали, что:
 
-* Запрос xref:flow-ui:data/data-loaders.adoc[загрузчика данных] может содержать параметры. Значения параметров могут быть установлены в обработчике событий `BeforeShowEvent` или в любом другом обработчике событий экрана или UI компонента.
+* Запрос {jmix-docs}/flow-ui/data/data-loaders.html[загрузчика данных^] может содержать параметры. Значения параметров могут быть установлены в обработчике событий `BeforeShowEvent` или в любом другом обработчике событий экрана или UI компонента.
 
-* Чтобы запустить загрузку данных, вы должны либо вызвать метод `load()` загрузчика данных в обработчике событий, либо добавить на экран фасет xref:flow-ui:facets/dataLoadCoordinator.adoc[].
+* Чтобы запустить загрузку данных, вы должны либо вызвать метод `load()` загрузчика данных в обработчике событий, либо добавить на экран фасет {jmix-docs}/flow-ui/facets/dataLoadCoordinator.html[DataLoadCoordinator^].
 
-* Контейнеры xref:flow-ui:vc/layouts/vbox.adoc[] и xref:flow-ui:vc/layouts/hbox.adoc[] используются для размещения компонентов пользовательского интерфейса вертикально или горизонтально. Корневой контейнер `layout` сам по себе представляет собой контейнер с вертикальным размещением.
+* Контейнеры {jmix-docs}/flow-ui/vc/layouts/vbox.html[VBox^] и {jmix-docs}/flow-ui/vc/layouts/hbox.html[HBox^] используются для размещения компонентов пользовательского интерфейса вертикально или горизонтально. Корневой контейнер `layout` сам по себе представляет собой контейнер с вертикальным размещением.
 
-* Метод `save()` объекта xref:flow-ui:data/data-context.adoc[DataContext] сохраняет все измененные объекты в базе данных.
+* Метод `save()` объекта {jmix-docs}/flow-ui/data/data-context.html[DataContext^] сохраняет все измененные объекты в базе данных.
 
 * Экран может быть закрыт программно с помощью метода `close()`, предоставляемого базовым классом `View`.
 
@@ -465,7 +465,7 @@ image::ui-from-scratch/theme-4.png[align="center"]
 
 * The `partNameGenerator` handler should be used to change the style of a table cell.
 
-* Палитру xref:studio:code-snippets.adoc[Code Snippets] можно использовать для быстрого поиска и генерации кода, работающего с API фреймворка.
+* Палитру {jmix-docs}/studio/code-snippets.html[Code Snippets^] можно использовать для быстрого поиска и генерации кода, работающего с API фреймворка.
 
 // todo flowui layout rules
 // TIP: Смотрите подробную информацию о расположении UI компонентов и контейнеров в разделе xref:ui:vcl/layout.adoc[Правила компоновки экрана].
