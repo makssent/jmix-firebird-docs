@@ -1,70 +1,70 @@
-= Самоучитель
+= Tutorial
 
 [WARNING]
 ====
-Перед началом работы над проектом ознакомьтесь с xref:firebird:limitations.adoc[ограничениями Firebird] и оцените, подходит ли эта СУБД вашей задаче. Часть возможностей Jmix и Studio с ней недоступна - например, автогенерация скриптов Liquibase.
+Before starting the project, review the xref:firebird:limitations.adoc[Firebird limitations] and decide whether this DBMS is suitable for your task. Some Jmix and Studio features are unavailable with Firebird, including automatic Liquibase changelog generation.
 ====
 
-В данном самоучителе вы познакомитесь с основами фреймворка Jmix путем создания простого веб-приложения с полным стеком. Самоучитель охватывает весь процесс разработки: от моделирования данных до создания пользовательского интерфейса и управления правами доступа.
+This tutorial introduces you to the essentials of Jmix by walking you through building a simple full-stack web application. It covers the entire development process, from data modeling to creating UI and managing access rights.
 
-В отличие от оригинального самоучителя Jmix, в качестве базы данных здесь используется Firebird. Платформа Jmix не поддерживает Firebird штатно - поддержка подключается отдельным аддоном. Поэтому наряду с обычными шагами разработки мы разберем, что именно нужно настроить для Firebird и чем его поведение отличается от СУБД, поддерживаемых платформой из коробки.
+Unlike the original Jmix tutorial, this tutorial uses Firebird as the database. The Jmix platform does not support Firebird out of the box; support is provided by a separate add-on. Along with the standard development steps, you will learn how to configure Firebird and how its behavior differs from databases supported by the platform out of the box.
 
-Чтобы извлечь максимальную пользу из этого самоучителя, вы должны быть знакомы с Java и реляционными базами данных.
+To get the most out of this tutorial, you should be familiar with Java and relational databases.
 
 [NOTE]
 ====
-Вместо самоучителя вы можете пройти бесплатный курс от разработчиков Jmix https://stepik.org/course/190140/promo[Ускоренная разработка веб-приложений^] на Stepik.
+Instead of the tutorial, you can take our free https://www.udemy.com/course/rapid-application-development-with-jmix/[Full Stack Java Web Development^] course on Udemy.
 
-И в курсе на Stepik, и в самоучителе рассматриваются одни и те же концепции Jmix. Учтите, что курс использует базу данных по умолчанию (HSQLDB) и не рассчитан на работу с Firebird, поэтому шаги, связанные с настройкой подключения и генерацией скриптов Liquibase, будут отличаться от описанных здесь.
+Both the course and the tutorial cover the same product concepts. Note that the course uses the default HSQLDB database and is not designed for Firebird, so the connection setup and Liquibase changelog generation steps differ from those described here.
 ====
 
 [[install]]
-== Установка инструментов
+== Installation
 
-Проверьте системные требования и установите Jmix Studio и Java Development Kit (JDK), как описано в разделе https://docs.jmix.ru/jmix/setup.html[Установка^] документации Jmix.
+Check system requirements and install Jmix Studio and Java Development Kit (JDK) as described in the https://docs.jmix.io/jmix/setup.html[Setup^] section of the Jmix documentation.
 
-Дополнительно к стандартной установке потребуется:
+In addition to the standard installation, you will need:
 
-* *Запущенный сервер Firebird* и учетная запись с правами на создание таблиц.
-* *Пустая база данных*, созданная заранее.
+* A *running Firebird server* and a user account with privileges to create tables.
+* An *empty database* created in advance.
 
 [[about-app]]
-== О приложении
+== About the Sample Application
 
-Вы разработаете приложение для автоматизации процесса онбординга (адаптации) сотрудника в компании. В каждом отделе компании есть HR-менеджер, который регистрирует новых сотрудников и назначает им список задач адаптации. Новый сотрудник получает список необходимых шагов и отмечает их выполнение.
+You will build an application that automates the employee onboarding process. Each company department has an HR manager who is responsible for registering new employees and assigning them a set of onboarding tasks. The new hire can then view and mark these tasks as completed.
 
-Полный исходный код приложения доступен в репозитории GitHub: https://github.com/jmix-framework/jmix-onboarding[jmix-framework/jmix-onboarding^]. Мы рекомендуем следовать инструкциям этого самоучителя, чтобы создать приложение шаг за шагом, но если вы хотите просто изучить готовое приложение, клонируйте репозиторий и откройте его в Jmix Studio, как описано в разделе {jmix-docs}/studio/project.html#opening-existing-project[Открытие существующего проекта^].
+The complete application source code is available in the https://github.com/jmix-framework/jmix-onboarding[jmix-framework/jmix-onboarding^] GitHub repository. We recommend following instructions of this tutorial to create the application step by step, but if you want to just investigate the completed example, clone the repository and open it in Jmix Studio as described in the {jmix-docs}/studio/project.html#opening-existing-project[Opening Existing Project^] section.
 
-Далее мы подробнее рассмотрим модель данных, роли пользователей и познакомимся с пользовательским интерфейсом, который мы собираемся создать.
+Below we will take a closer look at the data model, user roles and get familiar with the user interface that we are going to build.
 
 [[data-model]]
-=== Модель данных
+=== Data Model
 
-Создание приложения с помощью Jmix часто начинается с разработки модели данных. Давайте посмотрим на модель типового приложения для онбординга.
+Creating an application with Jmix often starts from designing the data model. Let's look at the model of the sample onboarding application.
 
 image::common/data-model-diagram.svg[align="center"]
 
-Главной сущностью в приложении является Пользователь (`User`). Пользователь характеризуется логином для входа в систему и другими атрибутами, такими как дата приема на работу (`joiningDate`) и статус процесса онбординга (`onboardingStatus`). Пользователь состоит в отделе, который обозначается ссылкой на сущность Отдел (`Department`).
+The central entity in the application is `User`. It contains the user login name and other attributes, as well as their joining date and the onboarding process status. The user belongs to a department, which is designated by the link to the `Department` entity.
 
-Сущность `Department` - это отдел компании. У него есть имя и HR-менеджер - пользователь, который регистрирует новых сотрудников, принадлежащих к отделу.
+The `Deparment` entity defines a company department. It has a name and an HR manager - a user who registers new employees belonging to the department.
 
-Сущность Шаг (`Step`) определяет этап онбординга, например, "Инструктаж по технике безопасности", "Заполнение профиля" и так далее. Шаг имеет название (`name`) и продолжительность (`duration`) - период времени в днях после даты приема, когда сотрудник должен выполнить этот шаг. Атрибут `sortValue` задает порядок выполнения шага в списке шагов.
+The `Step` entity defines an onboarding step like "Safety briefing", "Fill in profile", etc. A step has a name and a duration - a period of time in days after joining the organization when the employee should complete the step. The `sortValue` attribute sets the order of the step in a list of steps.
 
-Сущность `UserStep` - это этап онбординга конкретного пользователя. Она связывает сущности `User` и `Step` и добавляет атрибуты даты выполнения (`dueDate`) и даты завершения (`completedDate`). Дата выполнения рассчитывается как дата приема пользователя плюс продолжительность шага. Дата завершения устанавливается на ту дату, когда пользователь отмечает выполненный шаг.
+The `UserStep` entity is an onboarding step of a particular user. It links the `User` and `Step` entities and adds `dueDate` and `completedDate` attributes. The due date is calculated as a user's joining date plus the step duration. The completed date is set to the current date when the user marks the step done.
 
 [[user-roles]]
-=== Роли пользователей
+=== User Roles
 
-Наше приложение поддерживает следующие роли пользователей:
+The sample application supports the following user roles:
 
-* _Администраторы_ имеют полный контроль над приложением. Они видят всех пользователей, настраивают этапы онбординга, отделы и назначают HR-менеджеров.
+* _Administrators_ have full control of the application. They see all users, set up onboarding steps, departments and assign HR managers.
 +
 image::app-overview/admin-ui-1.png[align="center"]
 
-* _HR-менеджеры_ регистрируют новых сотрудников в своих отделах и начинают процесс онбординга, генерируя шаги для конкретного пользователя. Они также могут отслеживать процесс адаптации сотрудников своего отдела.
+* _HR Managers_ register new employees within their departments and start the onboarding process by generating steps for a particular user. They can also track the onboarding process of their department employees.
 +
 image::app-overview/hr-manager-ui-1.png[align="center"]
 
-* _Сотрудники_ могут видеть свои собственные шаги онбординга и отмечать выполненные шаги.
+* _Employees_ can see their own onboarding steps and mark the completed steps.
 +
 image::app-overview/employee-ui-1.png[align="center"]

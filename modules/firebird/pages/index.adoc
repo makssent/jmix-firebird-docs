@@ -1,33 +1,33 @@
-= Подключение Firebird к Jmix-проекту
+= Connecting Firebird to a Jmix Project
 
-Firebird не входит в список СУБД, поддерживаемых Jmix из коробки. Для подключения Firebird к приложению нужно использовать аддон https://github.com/makssent/jmix-firebird-addon[jmix-firebird^].
-
-[IMPORTANT]
-====
-Этот раздел рассчитан прежде всего на перенос готового Jmix-приложения на Firebird. Если приложения ещё нет или нет опыта работы с Jmix, лучше начать с xref:tutorial:index.adoc[самоучителя]. В качестве основы можно взять https://github.com/makssent/jmix-firebird-application[jmix-firebird-application^] — минимальный Jmix-проект из стандартного шаблона, уже настроенный для Firebird.
-====
-
-Интеграция проверена на реальном приложении https://github.com/makssent/jmix-crm-firebird[jmix-crm-firebird^]: приложение удалось запустить и использовать с Firebird, Liquibase создавал схему, тесты подключались через Jaybird, а основной функционал проекта работал. Весь xref:tutorial:index.adoc[самоучитель] также проверен с Firebird.
+Firebird is not included in the list of DBMSs supported by Jmix out of the box. To connect an application to Firebird, use the https://github.com/makssent/jmix-firebird-addon[jmix-firebird^] add-on.
 
 [IMPORTANT]
 ====
-Аддон версии `{addon-version}` поддерживает только Jmix {latest-version}.
+This section is intended primarily for migrating an existing Jmix application to Firebird. If you do not have an application yet or have no experience with Jmix, start with the xref:tutorial:index.adoc[tutorial]. You can use https://github.com/makssent/jmix-firebird-application[jmix-firebird-application^] as a foundation. It is a minimal Jmix project created from the standard template and already configured for Firebird.
 ====
 
-Для настройки потребуются:
+The integration has been tested with the https://github.com/makssent/jmix-crm-firebird[jmix-crm-firebird^] application: the application ran with Firebird, Liquibase created the schema, the tests connected through Jaybird, and the project's core functionality worked. The entire xref:tutorial:index.adoc[tutorial] has also been tested with Firebird.
 
-* запущенный сервер Firebird;
-* пустая база данных: Firebird должен создать ее до первого запуска приложения;
-* учетная запись с правами на создание и изменение объектов базы данных.
+[IMPORTANT]
+====
+Add-on version `{addon-version}` supports only Jmix {latest-version}.
+====
+
+The following are required:
+
+* a running Firebird server;
+* an empty database, which must be created by Firebird before the application starts for the first time;
+* a user account with permission to create and modify database objects.
 
 [[configuration]]
-== Настройка подключения
+== Connection Configuration
 
 [[dependencies]]
 [[datasource]]
-=== Зависимости и application.properties
+=== Dependencies and application.properties
 
-В блок `dependencies` файла `build.gradle` Jmix-проекта нужно добавить стартер аддона и драйвер Jaybird:
+Add the add-on starter and the Jaybird driver to the `dependencies` block in the Jmix project's `build.gradle` file:
 
 [source,groovy,subs="attributes+"]
 ----
@@ -37,9 +37,9 @@ dependencies {
 }
 ----
 
-Если проект использовал встроенную HSQLDB, зависимость `runtimeOnly 'org.hsqldb:hsqldb'` нужно удалить. После изменения файла Gradle-проект нужно обновить в IDE.
+If the project used the embedded HSQLDB database, remove the `runtimeOnly 'org.hsqldb:hsqldb'` dependency. After changing the file, refresh the Gradle project in the IDE.
 
-В `src/main/resources/application.properties` нужно заменить стандартные параметры источника данных на параметры подготовленной базы Firebird, а затем добавить свойства драйвера и типа СУБД:
+In `src/main/resources/application.properties`, replace the default data source settings with those of the prepared Firebird database, then add the driver and DBMS type properties:
 
 [source,properties]
 ----
@@ -47,47 +47,47 @@ main.datasource.url=jdbc:firebird://localhost:3050//path/to/application.fdb?enco
 main.datasource.username=sysdba
 main.datasource.password=your_password
 
-# Добавлено для Firebird
+# Added for Firebird
 main.datasource.driver-class-name=org.firebirdsql.jdbc.FBDriver
 jmix.data.dbms-type=firebird
 ----
 
-В JDBC URL значение `/path/to/application.fdb` нужно заменить на путь к файлу базы данных Firebird, а `sysdba` и `your_password` — на имя пользователя и пароль базы.
+In the JDBC URL, replace `/path/to/application.fdb` with the path to the Firebird database file, and replace `sysdba` and `your_password` with the database username and password.
 
-Firebird отсутствует в стандартном наборе типов СУБД, по которому Jmix определяет базу автоматически. Поэтому свойство `jmix.data.dbms-type=firebird` явно сообщает Jmix, что основной источник данных работает с Firebird. По этому значению Jmix использует Firebird-реализации, зарегистрированные аддоном.
+Firebird is not included in the standard set of DBMS types that Jmix detects automatically. Therefore, the `jmix.data.dbms-type=firebird` property explicitly tells Jmix that the main data source uses Firebird. Based on this value, Jmix uses the Firebird implementations registered by the add-on.
 
-Пример подключения зависимостей и настройки `application.properties` можно посмотреть в https://github.com/makssent/jmix-crm-firebird/commit/48d1c6e2c58bdbdcf6eb9468c36f54f73f0eeedb[коммите проекта jmix-crm-firebird^].
+See the https://github.com/makssent/jmix-crm-firebird/commit/48d1c6e2c58bdbdcf6eb9468c36f54f73f0eeedb[jmix-crm-firebird project commit^] for an example of adding the dependencies and configuring `application.properties`.
 
 [[liquibase]]
-=== Изменение Liquibase changelog-ов
+=== Modifying Liquibase Changelogs
 
-В файл `changelog.xml` нужно добавить включение changelog аддона и разместить его перед уже существующими включениями модулей Jmix и changelog-ов приложения:
+Add the add-on changelog include to `changelog.xml` and place it before the existing Jmix module and application changelog includes:
 
 [source,xml]
 ----
 <include file="/io/github/makssent/jmix/firebird/liquibase/changelog.xml"/>
 ----
 
-Порядок включений важен: changelog аддона объявляет значения свойств Liquibase для Firebird, которые используют следующие за ним скрипты.
+The include order is important: the add-on changelog declares the Liquibase property values for Firebird that are used by the scripts included after it.
 
-В init-файлах Liquibase тип `UUID` нужно заменить на свойство `${uuid.type}` во всех UUID-колонках:
+In Liquibase init files, replace the `UUID` type with the `${uuid.type}` property for every UUID column:
 
 [source,xml]
 ----
 <column name="ID" type="${uuid.type}">
 ----
 
-Значение свойства `uuid.type` для Firebird задаётся подключённым changelog аддона.
+The included add-on changelog defines the `uuid.type` property value for Firebird.
 
-В changelog-и приложения нужно добавить `firebird` в атрибуты `dbms`:
+Add `firebird` to the `dbms` attributes in application changelogs:
 
 [source,xml]
 ----
 <insert tableName="USER_" dbms="postgresql, mssql, hsqldb, firebird">
 ----
 
-Пример изменений Liquibase для поддержки Firebird можно посмотреть в https://github.com/makssent/jmix-crm-firebird/commit/213b0b3717eced383e9fefa3d0b5b4e2fcf22ff9[коммите проекта jmix-crm-firebird^].
+See the https://github.com/makssent/jmix-crm-firebird/commit/213b0b3717eced383e9fefa3d0b5b4e2fcf22ff9[jmix-crm-firebird project commit^] for an example of Liquibase changes that add Firebird support.
 
-Порядок ручного создания новых changelog-ов описан в разделе xref:liquibase-changelog.adoc[Создание Liquibase changelog].
+The procedure for manually creating new changelogs is described in xref:liquibase-changelog.adoc[Creating a Liquibase Changelog].
 
-Известные ограничения интеграции собраны в разделе xref:limitations.adoc[Ограничения Firebird]. Практический путь адаптации готового приложения показан в разделе xref:migration.adoc[Пример переноса приложения на Firebird].
+Known integration limitations are listed in xref:limitations.adoc[Firebird Limitations]. A practical approach to adapting an existing application is demonstrated in xref:migration.adoc[Example of Migrating an Application to Firebird].

@@ -1,23 +1,23 @@
-= С чего начать
+= Getting Started
 
-Поддержка Firebird в Jmix реализована через аддон https://github.com/makssent/jmix-firebird-addon[jmix-firebird-addon^]. Эта документация относится к Jmix 3.0. Нужный раздел можно выбрать в зависимости от задачи.
+Firebird support in Jmix is provided by the https://github.com/makssent/jmix-firebird-addon[jmix-firebird-addon^]. This documentation applies to Jmix 3.0. Choose a section based on your task.
 
-== Уже есть Jmix-проект
+== Existing Jmix Project
 
-xref:firebird:index.adoc[Подключение Firebird к Jmix-проекту] описывает настройку существующего приложения для работы с новой пустой базой Firebird: зависимости, Jaybird, datasource и адаптацию Liquibase changelog.
+xref:firebird:index.adoc[Connecting Firebird to a Jmix Project] describes how to configure an existing application to work with a new empty Firebird database, including dependencies, Jaybird, the data source, and Liquibase changelog adaptations.
 
-Схема новой базы создаётся через Liquibase. Перенос уже существующих данных из HSQLDB, PostgreSQL или другой СУБД не рассматривается.
+Liquibase creates the schema for the new database. Migrating existing data from HSQLDB, PostgreSQL, or another DBMS is outside the scope of this section.
 
-== Работа с Jmix начинается с нуля
+== Starting with Jmix from Scratch
 
-В xref:tutorial:index.adoc[самоучителе] пошагово показано создание Jmix-приложения с Firebird: от настройки проекта до интерфейса, бизнес-логики и управления доступом.
+The xref:tutorial:index.adoc[tutorial] demonstrates how to create a Jmix application with Firebird step by step, from project setup to the user interface, business logic, and access control.
 
-== Нужен минимальный готовый пример
+== Minimal Ready-to-Use Example
 
-Проект https://github.com/makssent/jmix-firebird-application[jmix-firebird-application^] создан из стандартного шаблона Jmix 3.0 и уже настроен для работы с Firebird. Инструкция по подготовке базы, настройке подключения и запуску находится в README проекта.
+The https://github.com/makssent/jmix-firebird-application[jmix-firebird-application^] project was created from the standard Jmix 3.0 template and is already configured to work with Firebird. Instructions for preparing the database, configuring the connection, and running the application are available in the project's README.
 
-== Дополнительные материалы
+== Additional Resources
 
-* xref:firebird:migration.adoc[Пример переноса приложения на Firebird] — практический пример перевода готового приложения `jmix-crm` с HSQLDB на Firebird.
-* xref:firebird:liquibase-changelog.adoc[Создание Liquibase changelog] — ручное создание changelog для изменений модели данных.
-* xref:firebird:limitations.adoc[Ограничения Firebird] — известные ограничения интеграции и проверенные временные решения.
+* xref:firebird:migration.adoc[Example of Migrating an Application to Firebird] — a practical example of migrating the existing `jmix-crm` application from HSQLDB to Firebird.
+* xref:firebird:liquibase-changelog.adoc[Creating a Liquibase Changelog] — manually creating a changelog for data model changes.
+* xref:firebird:limitations.adoc[Firebird Limitations] — known integration limitations and tested workarounds.

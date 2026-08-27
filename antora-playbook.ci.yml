@@ -3,12 +3,9 @@ site:
   start_page: jmix-firebird:firebird:overview.adoc
 content:
   sources:
-    - url: ./
-      branches: HEAD
+    - url: https://github.com/makssent/jmix-firebird-docs.git
+      branches: release_firebird_3.0_en
       start_path: .
-asciidoc:
-  attributes:
-    page-language-switch-base-url: /ru
 ui:
   bundle:
     url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/master/raw/build/ui-bundle.zip?job=bundle-stable

@@ -1,5 +1,5 @@
-* Работа с Firebird
-** xref:firebird:index.adoc[]
-** xref:firebird:liquibase-changelog.adoc[]
-** xref:firebird:limitations.adoc[]
-* xref:firebird:migration.adoc[Пример переноса приложения на Firebird]
+* Working with Firebird
+** xref:firebird:index.adoc[Connecting Firebird to a Jmix Project]
+** xref:firebird:liquibase-changelog.adoc[Creating a Liquibase Changelog]
+** xref:firebird:limitations.adoc[Firebird Limitations]
+* xref:firebird:migration.adoc[Example: Migrating an Application to Firebird]

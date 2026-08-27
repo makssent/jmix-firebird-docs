@@ -1,169 +1,163 @@
-= 1. Настройка проекта
+= 1. Project Setup
 
-В этой главе вы пройдете несколько простых шагов по настройке нового проекта. Совершите краткий экскурс и узнаете, как структурирован проект и как найти необходимые компоненты. Попробуете запустить свой проект, чтобы ознакомиться с функциями предварительной сборки и узнать, что происходит за кадром.
+In this chapter you will go through a few simple steps to set up a new project. You will learn how to navigate the project structure and locate essential components. Once your project is set up, you will be able to run it and explore its pre-built features.
 
 [[dev-env]]
-== Настройка среды разработки
+== Setting Up Development Environment
 
-Установите Jmix Studio и JDK, как описано в разделе https://docs.jmix.ru/jmix/setup.html[Установка^] документации Jmix, если вы еще не сделали этого.
+Install Jmix Studio and JDK as described in the https://docs.jmix.io/jmix/setup.html[Setup^] section of the Jmix documentation if you haven't done it yet.
 
-В этом самоучителе мы будем использовать некоторые премиум-функции Studio, такие как визуальные дизайнеры и возможности генерации кода. Эти функции доступны бесплатно в небольших проектах, включающих до 10 сущностей и ролей, таких как проект в данном самоучителе.
+In this tutorial, we will use some premium Studio features such as visual designers and code generation capabilities. These features are available for free in small projects containing up to 10 entities and roles, such as the tutorial project.
 
-Когда вы запустите Jmix Studio в первый раз, вам необходимо будет войти в учетную запись Jmix, после чего активируется пробная подписка на 28 дней. Подписка позволяет использовать премиум-функции в проектах любого размера. После истечения пробного периода Studio продолжит работать без подписки, предоставляя премиум-функции только в небольших проектах.
+When you run Jmix Studio for the first time, you should log in to the Jmix account, and after that a trial subscription for 28 days is activated. The subscription allows you to use the premium features in projects of any size. After the trial subscription expires, Studio will continue working without subscription, providing premium features only for small projects.
 
 [[create-project]]
-== Создание проекта
+== Creating Project
 
-Запустите IntelliJ IDEA с установленным плагином Jmix Studio, перейдите на вкладку *Projects* и нажмите *New Project*:
+Run IntelliJ IDEA with Jmix Studio plugin installed, switch to the *Projects* tab and click *New Project*:
 
 image::project-setup/create-project-1.png[align="center",width="912"]
 
-На первом шаге мастера создания проекта выберите *Jmix Project* в списке и оставьте значения по умолчанию в полях *Repository* и *Jmix version*:
+On the first step of the *New Project* wizard, select *Jmix Project* in the list and leave default values in the *Repository* and *Jmix version* fields:
 
 image::project-setup/create-project-2.png[align="center",width="914"]
 
-NOTE: Репозиторий *Jmix at nexus.jmix.io* является предпочтительным для пользователей в РФ.
+In the *Project JDK* field, select a JDK version 17 or 21. If the field displays `<No SDK>`, select *Download JDK* in its dropdown list and follow further instructions to download and select a JDK.
 
-В поле *Project JDK* выберите JDK версии 17 или 21. Если в поле отображается `<No SDK>`, выберите *Download JDK* в выпадающем списке и следуйте дальнейшим инструкциям, чтобы загрузить JDK.
+Click *Next*.
 
-Нажмите *Next*.
-
-На следующем шаге мастера создания проекта выберите первый шаблон проекта из списка: `Full-Stack Application (Java)`:
+On the next step of the *New Project* wizard, select the first project template from the list: `Full-Stack Application (Java)`:
 
 image::project-setup/create-project-3.png[align="center",width="915"]
 
-Нажмите *Next*.
+Click *Next*.
 
-На последнем шаге мастера введите `onboarding` в поле *Project name*:
+On the last step of the *New Project* wizard, enter `onboarding` to the *Project name* field:
 
 image::project-setup/create-project-4.png[align="center",width="915"]
 
-Поле *Base package* определяет пакет Java, который будет содержать все классы и ресурсы проекта. Сохраните значение, предложенное мастером (`com.company.onboarding`), чтобы соответствовать коду в самоучителе.
+The *Base package* field defines the Java package which will contain all classes and resources of the project. Keep the value suggested by the wizard (`com.company.onboarding`) to conform the code in the tutorial.
 
-*Project id* не требуется для приложения, поэтому оставьте поле пустым.
+*Project id* is optional for an application, so leave the field empty.
 
-Нажмите кнопку *Create*.
+Click *Create*.
 
-NOTE: После создания проекта IDE начинает загрузку зависимостей и индексирование проекта. При первом запуске это может занять значительное время (до 10 минут или более, в зависимости от скорости соединения с интернетом и мощности компьютера). Пожалуйста, подождите, пока индикатор выполнения в строке состояния не исчезнет.
+NOTE: After the project is created, IDE starts downloading dependencies and indexing the project. On the first launch, it may take significant time (up to 10 minutes or more, depending on your internet connection and computer power). Please wait until the progress indicator in the status bar disappears.
 
 [TIP]
 ====
-IDE покажет ряд уведомлений, предлагающих загрузить "pre-built shared indexes" и установить дополнительные плагины. Вы можете смело отказаться от них.
+The IDE will show a number of notifications suggesting to download "pre-built shared indexes" and install additional plugins. You can safely refuse them.
 ====
 
 [[login]]
-=== Вход в учетную запись Jmix
+=== Logging in to Jmix Account
 
-После загрузки зависимостей и индексирования проекта в первый раз Studio покажет диалоговое окно *Jmix Sign In*. В этом диалоговом окне вам следует войти в свою учетную запись Jmix или зарегистрировать новую.
+After downloading dependencies and indexing a project for the first time, Studio will show the *Jmix Sign In* dialog. In this dialog, you should log in to your Jmix account or register the new one.
 
 image::project-setup/sign-in-dialog.png[align="center",width="496"]
 
-Нажмите на кнопку *Sign In / Register*. Вы будете перенаправлены в системный браузер.
+Click on the *Sign In / Register* button. You will be redirected to the system browser.
 
-image::https://raw.githubusercontent.com/jmix-framework/jmix-docs/release_3_ru/content/modules/ROOT/images/store/login-form.png[align="center",width="1549"]
+image::https://raw.githubusercontent.com/jmix-framework/jmix-docs/release_3/content/modules/ROOT/images/store/login-form.png[align="center",width="1549"]
 
-* Если у вас нет учетной записи Jmix, нажмите на ссылку *Register*. В регистрационной форме заполните поля *First name*, *Last name*, *Email* и *Password*, примите политику конфиденциальности и нажмите на кнопку *Register*.
+* If you don't have a Jmix account, click on the *Register* link. In the Registration form, fill in the *First name*, *Last name*, *Email*, and *Password* fields, accept the privacy policy and click on the *Register* button.
 +
-NOTE: Введенный вами адрес электронной почты будет использоваться в качестве вашего логина и основного адреса электронной почты для вашей учетной записи.
+NOTE: The email address you entered will be used as your login and the primary email address for your account.
 +
-После того как вы заполнили регистрационную форму, вам следует подтвердить свой адрес электронной почты, чтобы активировать свою учетную запись.
-+
-Найдите письмо с подтверждением в своем почтовом ящике и нажмите на ссылку в письме, чтобы завершить регистрацию.
-+
-//Вернитесь в IDE и нажмите на кнопку *Log in* в окне *Email Verification*.
+After you have submitted the registration form, you should verify your email address to activate your account. Find the verification email in your inbox and click the link in the email to finish the registration.
 
-* Если у вас есть учетная запись Jmix, введите адрес электронной почты и пароль и нажмите на кнопку *Sign In*.
+* If you already have a Jmix account, enter the *Email* and *Password* and click the *Sign In* button.
 
-Новый пользователь автоматически получает пробную подписку. Пробная подписка позволяет оценить все возможности студии в течение 28 дней.
+A new user automatically gets a trial subscription to evaluate the full capabilities of the Studio for 28 days.
 
 image::project-setup/jmix-subscription.png[align="center",width="612"]
 
-Когда проект будет готов, IDE откроет окно инструментов *Jmix* в левой части экрана и страницу приветствия в рабочей области:
+When the project is ready, and Jmix Studio is activated, IDE opens the *Jmix* tool window on the left and the *Welcome* page in the working area:
 
 image::project-setup/create-project-5.png[align="center",width="947"]
 
 [TIP]
 ====
-Если все индикаторы прогресса пропали, но страница *Welcome* и окно инструментов *Jmix* не появились, выполните следующее:
+If all progress indicators have disappeared, but you don't see the *Welcome* page and *Jmix* tool window, do the following:
 
-- Откройте окно инструментов *Gradle*, доступное на правой стороне IDE.
-- Нажмите кнопку *Reload All Gradle Projects* (image:common/refresh.svg[]) в панели инструментов этого окна.
+- Open *Gradle* tool window available on the right side of the IDE.
+- Click *Reload All Gradle Projects* (image:common/refresh.svg[]) tool button.
 ====
 
 [[explore-project]]
-== Изучение нового проекта
+== Exploring New Project
 
-Окно инструментов Jmix отображает структурированный вид проекта. Давайте разберемся, что содержит вновь созданный проект.
+The *Jmix* tool window presents a structured view of the project. Let's figure out what a newly created project contains.
 
-* В разделе *Build Scripts* вы можете увидеть файлы сборки Gradle:
+* In the *Build Scripts* section you can see the Gradle build files:
 +
 image::project-setup/explore-project-1.png[align="center",width="758"]
 
-* Раздел *Configuration* содержит главный класс приложения `OnboardingApplication` и файл `application.properties`, который определяет параметры подключения к базе данных, уровни логирования и другие свойства:
+* The *Configuration* section contains the main application class `OnboardingApplication` and the `application.properties` file which defines database connection parameters, logging levels and other properties:
 +
 image::project-setup/explore-project-2.png[align="center",width="1191"]
 +
-Класс `OnboardingSecurityConfiguration` дополняет стандартные конфигурации безопасности, предоставляемые модулями Jmix. Вы можете настроить безопасность {jmix-docs}/security/custom-endpoints.html[кастомных эндпойнтов^], определив в этом классе бины  `SecurityFilterChain`.
+The `OnboardingSecurityConfiguration` class complements the standard security configurations provided by Jmix modules. You can configure {jmix-docs}/security/custom-endpoints.html[custom API endpoint^] security by defining `SecurityFilterChain` beans within this class.
 
-* В разделе *Add-ons* отображается список установленных дополнений Jmix:
+* The *Add-ons* section displays the list of installed Jmix add-ons:
 +
 image::project-setup/explore-project-3.png[align="center",width="631"]
 +
-Если вы дважды щелкните на разделе *Add-ons*, Studio откроет диалоговое окно для управления дополнениями в вашем проекте.
+If you double-click on the *Add-ons* node, Studio will open a dialog window for managing add-ons in your project.
 
-* В разделе *Data Stores* отображается список используемых в проекте баз данных и их файлы Liquibase changelog:
+* The *Data Stores* section displays the list of databases used in the project, and their Liquibase changelogs:
 +
 image::project-setup/explore-project-4.png[align="center",width="634"]
 +
-В новом проекте по умолчанию используется HSQL - простая реляционная СУБД, хранящая данные в файлах подкаталога `.jmix/hsqldb` проекта.
+In the new project, the HSQL relational database is used by default. It stores data in the `.jmix/hsqldb` folder of the project.
 +
-Liquibase changelogs - это XML-файлы, описывающие изменения схемы базы данных.
+Liquibase changelogs are XML files describing the database schema changes.
 +
-Если дважды щелкнуть на подразделе *Main Data Store*, откроется диалоговое окно, содержащее параметры подключения к базе данных. Эти параметры хранятся в файле `application.properties`.
+If you double-click on the *Main Data Store* node, you will see parameters of the database connection in a dialog window. These parameters are stored in the `application.properties` file.
 
-* В разделе *Data Model* отображаются все сущности проекта. В новом проекте есть единственная сущность `User`:
+* The *Data Model* section displays all project entities. There is a single `User` entity in the new project:
 +
 image::project-setup/explore-project-5.png[align="center",width="640"]
 
-* Раздел *User Interface* содержит экраны проекта, а также подразделы *Themes* для управления CSS, *Message Bundle* для быстрого доступа к локализованным сообщениям, и *Main Menu* для открытия дескриптора меню:
+* The *User Interface* section contains the project views, as well as the *Themes* node to manage custom CSS, the *Message Bundle* node for quick access to localized messages and the *Main Menu* node for opening the menu descriptor:
 +
 image::project-setup/explore-project-6.png[align="center",width="634"]
 +
-Как вы можете видеть, проект уже содержит несколько экранов:
+As you can see, the project already contains a few views:
 
-** `LoginView` принимает имя пользователя и пароль для аутентификации пользователя.
+** `LoginView` accepts username and password for user authentication.
 
-** `MainView` открывается после входа в систему и отображает главное меню.
+** `MainView` opens after login and contains the main menu.
 
-** `User.list` и `User.detail` - это CRUD-экраны для сущности `User`. В Jmix, по соглашению, суффикс `list` означает экран, отображающий список сущностей, а `detail` означает экран редактирования отдельного экземпляра сущности.
+** `User.list` and `User.detail` are CRUD views for the `User` entity. In Jmix, by convention, `list` suffix means a view displaying the list of entities, and `detail` means a view editing a single entity instance.
 
-* Раздел *Beans* отображает бины Spring beans, определенные в проекте.
+* The *Beans* section displays Spring beans defined in the project.
 +
 image::project-setup/explore-project-9.png[align="center",width="634"]
 
-* В разделе *Security* показан список ролей. Новый проект содержит роль полного доступа `FullAccessRole`, которая назначается пользователю `admin`, и роль `UiMinimalRole`, которая дает минимальные права пользователям:
+* The *Security* section shows a list of roles. The new project contains the `FullAccessRole` which is assigned to the `admin` user and `UiMinimalRole` which gives minimal permissions to users:
 +
 image::project-setup/explore-project-7.png[align="center",width="634"]
 
-* Раздел *Deployment* позволяет быстро развернуть контейнеризированное приложение в облаке:
+* The *Deployment* section will let you quickly deploy a containerized application to the cloud:
 +
 image::project-setup/explore-project-10.png[align="center",width="619"]
 
-* Если дважды щелкнуть на разделе *Sources*, Studio откроет окно инструментов *Project* с обычным видом всего исходного кода:
+* If you double-click on the *Sources* node, Studio will open the *Project* tool window with the usual view of the entire source code:
 +
 image::project-setup/explore-project-8.png[align="center",width="641"]
 +
-Чтобы продолжить работу с самоучителем, снова откройте панель инструментов *Jmix* на левой стороне IDE.
+Navigate to the *Jmix* tool window by clicking on the tab located on the left side of the IDE window.
 
 [[add-firebird]]
-== Подготовка к запуску
+== Preparing to Run
 
-Созданный проект настроен на встроенную базу HSQLDB. Прежде чем запускать его, переведем проект на Firebird: подключим аддон и драйвер, укажем параметры соединения и поправим скрипты Liquibase.
+The created project is configured to use the embedded HSQLDB database. Before running it, switch the project to Firebird: add the add-on and driver, specify the connection parameters, and adjust the Liquibase changelogs.
 
 [[firebird-dependencies]]
-=== Зависимости
+=== Dependencies
 
-Откройте `build.gradle` и в блоке `dependencies` подключите аддон, а зависимость HSQLDB замените на драйвер Firebird:
+Open `build.gradle`. In the `dependencies` block, add the add-on and replace the HSQLDB dependency with the Firebird driver:
 
 [source,groovy]
 ----
@@ -180,13 +174,13 @@ dependencies {
     implementation 'io.jmix.datatools:jmix-datatools-starter'
     implementation 'io.jmix.datatools:jmix-datatools-flowui-starter'
 
-    // Добавлено для Firebird: аддон, дающий платформе поддержку БД
+    // Added for Firebird: the add-on that provides database support
     implementation 'io.github.makssent:jmix-firebird-starter:0.1.0'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'com.vaadin:vaadin-dev'
 
-    // Заменено: вместо HSQLDB подключается JDBC-драйвер Firebird
+    // Replaced: use the Firebird JDBC driver instead of HSQLDB
     // runtimeOnly 'org.hsqldb:hsqldb'
     runtimeOnly 'org.firebirdsql.jdbc:jaybird:6.0.5'
 
@@ -197,21 +191,21 @@ dependencies {
 }
 ----
 
-Аддон `jmix-firebird-starter` учит платформу работать с Firebird: реализует интерфейсы Jmix, описывающие диалект СУБД, регистрирует платформу EclipseLink с правильным отображением типов Java на типы Firebird и добавляет changelog Liquibase со значениями свойств, на которые ссылаются скрипты самой платформы. Исходную реализацию можно посмотреть в репозитории https://github.com/makssent/jmix-firebird-addon[makssent/jmix-firebird-addon^]. Jaybird - это JDBC-драйвер с открытым исходным кодом https://github.com/FirebirdSQL/jaybird[FirebirdSQL/jaybird^] для работы с Firebird.
+The `jmix-firebird-starter` add-on enables the platform to work with Firebird. It implements the Jmix interfaces that describe the database dialect, registers an EclipseLink platform with the correct mapping of Java types to Firebird types, and adds a Liquibase changelog containing property values referenced by the platform's own scripts. You can view the source implementation in the https://github.com/makssent/jmix-firebird-addon[makssent/jmix-firebird-addon^] repository. Jaybird is the open-source https://github.com/FirebirdSQL/jaybird[FirebirdSQL/jaybird^] JDBC driver for Firebird.
 
 [NOTE]
 ====
-После правки `build.gradle` IDE предложит обновить проект. Нажмите *Load Gradle Changes* или кнопку *Reload All Gradle Projects* (image:common/refresh.svg[]) в окне инструментов *Gradle* - иначе новые зависимости не попадут в classpath.
+After editing `build.gradle`, the IDE will prompt you to update the project. Click *Load Gradle Changes* or *Reload All Gradle Projects* (image:common/refresh.svg[]) in the *Gradle* tool window; otherwise, the new dependencies will not be added to the classpath.
 ====
 
 [[firebird-connection]]
-=== Параметры подключения
+=== Connection Parameters
 
-В файле `application.properties` замените параметры HSQLDB на параметры своей базы Firebird:
+In `application.properties`, replace the HSQLDB parameters with the parameters of your Firebird database:
 
 [source,properties]
 ----
-# Заменено: вместо параметров HSQLDB - подключение к Firebird
+# Replaced: connect to Firebird instead of HSQLDB
 #main.datasource.url=jdbc:hsqldb:file:.jmix/hsqldb/onboarding
 #main.datasource.username=sa
 #main.datasource.password=
@@ -219,24 +213,24 @@ main.datasource.url=jdbc:firebird://localhost:3050//path/to/onboarding.fdb?encod
 main.datasource.username=sysdba
 main.datasource.password=masterkey
 
-# Добавлено для Firebird
+# Added for Firebird
 main.datasource.driver-class-name=org.firebirdsql.jdbc.FBDriver
 jmix.data.dbms-type=firebird
 ----
 
-Свойство `jmix.data.dbms-type` здесь ключевое: по нему платформа выбирает реализации, которые предоставляет аддон. Без него Jmix не поймет, что перед ним Firebird, даже если драйвер подключен.
+The `jmix.data.dbms-type` property is essential: the platform uses it to select the implementations provided by the add-on. Without it, Jmix will not recognize Firebird even if the driver is present.
 
 [WARNING]
 ====
-База должна существовать до первого запуска. В отличие от встроенной HSQLDB, Firebird не создает файл базы сам. Создайте пустую базу заранее - например утилитой `isql` - и укажите путь к ней в `main.datasource.url`. Таблицы в ней создаст Liquibase при старте приложения.
+The database must exist before the first run. Unlike embedded HSQLDB, Firebird does not create the database file automatically. Create an empty database in advance, for example with the `isql` utility, and specify its path in `main.datasource.url`. Liquibase will create the tables when the application starts.
 ====
 
 [[firebird-liquibase]]
-=== Скрипты Liquibase
+=== Liquibase Changelogs
 
-Осталось поправить два места в скриптах.
+Two changes to the changelogs are still required.
 
-Первое - главный changelog: в окне инструментов *Jmix* это *Data Stores* -> *Main Data Store* -> *Liquibase: changelog.xml*, либо файл `src/main/resources/com/company/onboarding/liquibase/changelog.xml` в дереве проекта. Добавьте в него включение файла аддона, причем перед включениями модулей Jmix:
+First, open the master changelog. In the *Jmix* tool window, it is located under *Data Stores* -> *Main Data Store* -> *Liquibase: changelog.xml*. Alternatively, open `src/main/resources/com/company/onboarding/liquibase/changelog.xml` in the project tree. Add the add-on changelog before the Jmix module changelogs:
 
 [source,xml]
 ----
@@ -249,7 +243,7 @@ jmix.data.dbms-type=firebird
 
     <!-- DO NOT REMOVE. This is a master changelog that runs all other changelogs. -->
 
-    <!-- Добавлено для Firebird: должно стоять перед включениями модулей Jmix -->
+    <!-- Added for Firebird: must precede the Jmix module changelogs -->
     <include file="/io/github/makssent/jmix/firebird/liquibase/changelog.xml"/>
 
     <include file="/io/jmix/data/liquibase/changelog.xml"/>
@@ -261,9 +255,9 @@ jmix.data.dbms-type=firebird
 </databaseChangeLog>
 ----
 
-Порядок здесь важен. Файл аддона объявляет свойства Liquibase - например, `${uuid.type}` со значением `varchar(36)`, потому что отдельного типа UUID в Firebird нет. Объявленное свойство видно только тем скриптам, которые идут ниже по тексту, поэтому включение аддона должно стоять раньше остальных.
+The order is important. The add-on changelog declares Liquibase properties such as `${uuid.type}`, whose value is `varchar(36)` because Firebird has no dedicated UUID type. A declared property is visible only to scripts included below it, so the add-on changelog must come first.
 
-Второе - вложенный в него файл `010-init-user.xml`, где создается учетная запись администратора. В шаблоне проекта эти вставки ограничены списком СУБД, и Firebird в него не входит. Допишите его в атрибут `dbms` у обоих changeset-ов:
+Second, open the nested `010-init-user.xml` file, which creates the administrator account. In the project template, these inserts are restricted to a list of DBMS types that does not include Firebird. Add `firebird` to the `dbms` attribute of both changesets:
 
 [source,xml]
 ----
@@ -275,30 +269,30 @@ jmix.data.dbms-type=firebird
 <insert tableName="SEC_ROLE_ASSIGNMENT" dbms="postgresql, mssql, hsqldb, firebird">
 ----
 
-Без этой правки база поднимется, но учетной записи `admin` в ней не окажется и войти в приложение не получится.
+Without this change, the database will be initialized without the `admin` account, and you will not be able to log in.
 
 [[run-app]]
-== Запуск приложения
+== Running the Application
 
-Вы можете запустить новый проект сразу после открытия его в IDE и увидеть начальное состояние вашего приложения.
+You can run the new project right after opening it in the IDE and see the initial state of your application.
 
 [WARNING]
 ====
-В оригинальном самоучителе Jmix приложение запускают кнопкой *Debug* (image:common/start-debugger.svg[]) на главной панели инструментов. С Firebird этот способ не работает.
+The original Jmix tutorial starts the application with the *Debug* button (image:common/start-debugger.svg[]) in the main toolbar. This method does not work with Firebird.
 
-Перед стартом Studio сверяет модель данных со схемой базы, чтобы при расхождении сгенерировать скрипт миграции. Для этого ей нужно уметь пересоздавать базу, а такая поддержка заложена в нее только для тех СУБД, с которыми Jmix работает штатно: HSQLDB, PostgreSQL, MySQL, MariaDB, Microsoft SQL Server и Oracle. Firebird в этот список не входит, поэтому проверка обрывается с ошибкой и до запуска приложения дело не доходит.
+Before starting, Studio compares the data model with the database schema and generates a migration script if they differ. To do this, Studio must be able to recreate the database, but this support is implemented only for the DBMSs supported by Jmix out of the box: HSQLDB, PostgreSQL, MySQL, MariaDB, Microsoft SQL Server, and Oracle. Firebird is not on this list, so the check fails before the application starts.
 ====
 
-Поэтому запускать приложение мы будем из консоли. Откройте терминал в корне проекта и выполните:
+Run the application from the command line instead. Open a terminal in the project root and execute:
 
 [source,bash]
 ----
 ./gradlew bootRun
 ----
 
-При старте приложения Liquibase выполнит все файлы changelog проекта: сначала скрипты из зависимостей Jmix, затем скрипты самого проекта (`010-init-user.xml`). Так в пустой базе появятся таблицы и учетная запись администратора.
+When the application starts, Liquibase executes all project changelogs: first the scripts from Jmix dependencies, and then the project's own scripts (`010-init-user.xml`). This creates the tables and the administrator account in the empty database.
 
-Когда приложение будет готово к работе, в конце вывода в консоли появятся сообщения:
+When the application is ready, the following messages appear at the end of the console output:
 
 [source]
 ----
@@ -307,36 +301,36 @@ Application running at http://localhost:8080/
 ----
 
 [[enter-app]]
-=== Вход в приложение
+=== Entering Application
 
-Откройте `localhost:8080` в веб-браузере. Вы увидите экран логина вашего приложения:
+Open `localhost:8080` in a web browser. You will see your application login view:
 
 image::project-setup/run-app-5.png[align="center"]
 
-Учетные данные администратора (`admin` / `admin`) уже заданы в полях имени пользователя и пароля (вы можете удалить их позже), поэтому просто нажмите *Log in*.
+The `admin` / `admin` credentials are already set in the username and password fields (you can remove them later), so just click *Log in*.
 
-В главном меню выберите *Application* → *Users*:
+In the main menu, click *Application* -> *Users*:
 
 image::project-setup/run-app-6.png[align="center"]
 
-Это экран `Users.list`, показывающий список сущностей `User`. Пока в этом списке есть только пользователь `admin`, созданный в базе данных согласно файлу changelog `010-init-user.xml`.
+It's the `Users.list` view showing the list of `User`  entities. Now it has only the `admin` user created in the database by the `010-init-user.xml` changelog.
 
 [[stop-app]]
-=== Остановка приложения
+=== Stopping the Application
 
-Чтобы остановить запущенное приложение, нажмите `Ctrl+C` в терминале.
+To stop the running application, press `Ctrl+C` in the terminal.
 
 [[summary]]
-== Резюме
+== Summary
 
-В этом разделе вы настроили среду разработки и создали новый проект в IDE.
+In this section, you have set up the development environment and created a new project in the IDE.
 
-Вы узнали, что:
+You have learned that:
 
-* Jmix Studio - это плагин для IntelliJ IDEA.
-* В самоучителе предполагается, что у вас есть коммерческая или пробная {jmix-docs}/studio/subscription.html[подписка^] для Jmix Studio. Пробная подписка активируется при первом входе в учетную запись Jmix.
-* В студии есть мастер для создания новых проектов по шаблонам.
-* Studio показывает структуру проекта в окне инструментов *Jmix*.
-* Новый проект содержит функциональность для входа в приложение и управления пользователями.
-* Новое приложение может быть запущено из IDE сразу после создания проекта.
-* Новый проект использует файловую базу данных HSQL, которая автоматически создается и инициализируется при первом запуске.
+* Jmix Studio is a plugin for IntelliJ IDEA.
+* The tutorial assumes that you have a commercial or trial {jmix-docs}/studio/subscription.html[subscription^] for Jmix Studio. A trial subscription is issued when logging in to Jmix account for the first time.
+* Studio has a wizard for creating new projects by templates.
+* Studio shows the project structure in the *Jmix* tool window.
+* The new project contains functionality for logging in to the application and managing users.
+* With Firebird, the application must be started from the command line because Studio cannot perform its pre-run database schema check.
+* The Firebird database must be created in advance; Liquibase initializes its schema when the application starts.

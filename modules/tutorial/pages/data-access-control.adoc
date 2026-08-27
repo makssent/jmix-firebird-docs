@@ -1,24 +1,24 @@
-= 9. Контроль доступа к данным
+= 9. Data Access Control
 
-До сих пор вы входили в приложение как администратор и имели полный контроль над данными и пользовательским интерфейсом. В этой заключительной главе вы настроите ограниченный доступ к приложению для HR-менеджеров и сотрудников.
+So far you entered the application as admin and had full control over data and UI. In this final chapter, you will set up restricted access to the application for HR Managers and Employees.
 
 [[employees-resource-role]]
-== Ресурсная роль для сотрудников
+== Resource Role for Employees
 
 [[create-resource-role]]
-=== Создание ресурсной роли
+=== Creating Resource Role
 
-В окне инструментов *Jmix* нажмите *New* (image:common/add.svg[]) -> *Resource Role*:
+In the *Jmix* tool window, click *New* (image:common/add.svg[]) -> *Resource Role*:
 
 image::security/employee-role-1.png[align="center", width="348"]
 
-В диалоговом окне *New Resource Role* введите `Employee` в поле *Role name* и выберите `UI` в раскрывающемся списке *Security scope*:
+In the *New Resource Role* dialog, enter `Employee` into the *Role name* field and select `UI` in the *Security scope* dropdown:
 
 image::security/employee-role-2.png[align="center", width="662"]
 
-Нажмите на кнопку *OK*.
+Click *OK*.
 
-Studio создаст и откроет аннотированный интерфейс:
+Studio will create and open an annotated interface:
 
 [source,java]
 ----
@@ -32,19 +32,19 @@ public interface EmployeeRole {
 }
 ----
 
-TIP: Роль с областью `UI` применяется к пользователям только тогда, когда они входят в систему через пользовательский интерфейс. Если тот же пользователь входит в систему через REST API, роль не применяется. Рекомендуется создать другой набор ролей для API, обычно с меньшим количеством разрешений.
+TIP: A role with the `UI` scope is applied to users only when they enter the system through the UI. If the same user logs in through the REST API, the role is not applied. It is recommended to create a different set of roles for the API, usually with fewer permissions.
 
-Перейдите на вкладку *User Interface*, чтобы определить права доступа к экранам. Выберите `MyOnboardingView` в дереве меню и установите справа флажки *Allow*:
+Switch to the *User Interface* tab to define permissions to views. Select `MyOnboardingView` in the menu tree and select *Allow* checkboxes on the right:
 
 image::security/employee-role-3.png[align="center"]
 
-После этого перейдите на вкладку *Entities* и выберите следующие разрешения:
+After that, switch to the *Entities* tab and select the following permissions:
 
 image::security/employee-role-4.png[align="center"]
 
-Сотруднику необходимы операции на чтение сущностей `Step`, `User` и `UserStep`, чтобы просматривать их в пользовательском интерфейсе, и операции на обновление сущностей `User` и `UserStep`, чтобы отметить выполненные шаги.
+An employee needs to read the `Step`, `User` and `UserStep` entities to view them in UI and update `User` and `UserStep` to mark completed steps.
 
-Вернитесь на вкладку *Text*. Вы увидите, что Studio сгенерировала несколько методов с аннотациями, соответствующими предоставленным разрешениям:
+Switch back to the *Text* tab. You will see that Studio has generated a few methods with annotations corresponding to granted permissions:
 
 [source,java]
 ----
@@ -79,51 +79,51 @@ public interface EmployeeRole {
 }
 ----
 
-Нажмите *Ctrl/Cmd+S* и переключитесь на запущенное приложение. Откройте экран *Security* -> *Resource roles*. Вы увидите новую роль в списке:
+Press *Ctrl/Cmd+S* and switch to the running application. Open *Security* -> *Resource roles* view. You will see the new role in the list:
 
 image::security/employee-role-5.png[align="center"]
 
 [[assign-role]]
-=== Назначение роли
+=== Assigning Role
 
-Теперь давайте назначим роль пользователю. Откройте экран списка пользователей и создайте нового пользователя `bob`. Выберите пользователя и нажмите кнопку *Role assignments*:
+Now let's assign the role to a user. Open the *Users* list view and create a new user `bob`. Select the user and click *Role assignments* button:
 
 image::security/assign-role-1.png[align="center"]
 
-На экране *Role assignments* нажмите кнопку *Add* на панели *Resource permissions*.
+In the *Role assignments* view, click the *Add* button in the *Resource roles* panel.
 
-В диалоговом окне *Select resource roles* выберите роли `Employee` и `UI: minimal access`:
+In the *Select resource roles* dialog, select `Employee` and `UI: minimal access` roles:
 
 image::security/assign-role-2.png[align="center"]
 
-Нажмите кнопку *Select*. Выбранные роли будут показаны на панели *Resource permissions*:
+Click *Select*. The selected roles will be shown in the *Resource roles* panel:
 
 image::security/assign-role-3.png[align="center"]
 
-Нажмите кнопку *OK*, чтобы сохранить назначения ролей.
+Click *OK* to save the role assignments.
 
-TIP: Роль `UI: minimal access` требуется для входа в пользовательский интерфейс приложения. Вы можете найти ее в своем проекте и исследовать содержимое роли.
+TIP: The `UI: minimal access` role is required for the user to log in to the application UI. You can find it in your project and investigate its contents.
 
-Выйдите из системы с помощью кнопки рядом с текущим именем пользователя:
+Log out using the button next to the current user name:
 
 image::security/assign-role-4.png[align="center", width="414"]
 
-Войдите в систему как `bob`. В меню вы увидите только экран `My onboarding`:
+Log in as `bob`. You will see only `My onboarding` view in the menu:
 
 image::security/assign-role-5.png[align="center"]
 
 [[managers-resource-role]]
-== Ресурсная роль для HR-менеджера
+== Resource Role for HR Managers
 
-В окне инструментов *Jmix* нажмите *New* (image:common/add.svg[]) -> *Role*.
+In the *Jmix* tool window, click *New* (image:common/add.svg[]) -> *Role*.
 
-В диалоговом окне *New Role* введите `HR Manager` в поле *Role name*, установите в *Role code* значение `hr-manager` и выберите `UI` в раскрывающемся списке *Security scope*:
+In the *New Role* dialog, enter `HR Manager` into the *Role name* field, set *Role code* to `hr-manager`, and select `UI` in the *Security scope* dropdown:
 
 image::security/manager-role-1.png[align="center", width="667"]
 
-Нажмите на кнопку *OK*.
+Click *OK*.
 
-Studio создаст и откроет аннотированный интерфейс, определяющий роль:
+Studio will create and open the annotated interface defining the role:
 
 [source,java]
 ----
@@ -137,15 +137,15 @@ public interface HRManagerRole {
 }
 ----
 
-Перейдите на вкладку *User Interface* и разрешите экраны `User.list` и `User.detail` (вы можете использовать поле поиска сверху для фильтрации дерева):
+Switch to the *User Interface* tab and allow `User.list` and `User.detail` views (use the search field on top to filter the tree):
 
 image::security/manager-role-2.png[align="center"]
 
-Перейдите на вкладку *Entities* и предоставьте разрешение на чтение `Department` и `Step`, а также все разрешения `User` и `UserStep`:
+Switch to the *Entities* tab and give read permission to `Department` and `Step`, and all permissions to `User` and `UserStep`:
 
 image::security/manager-role-3.png[align="center"]
 
-Вернитесь на вкладку *Text* и просмотрите аннотации, созданные Studio:
+Switch back to the *Text* tab and inspect the annotations generated by Studio:
 
 [source,java]
 ----
@@ -187,28 +187,28 @@ public interface HRManagerRole {
 }
 ----
 
-Нажмите *Ctrl/Cmd+S* и переключитесь на запущенное приложение. Войдите в систему как администратор. Откройте экран *Security* -> *Resource roles*  и убедитесь, что новая роль `HR Manager` есть в списке.
+Press *Ctrl/Cmd+S* and switch to the running application. Log in as `admin`. Open *Security* -> *Resource roles* view and make sure the new `HR Manager` role is in the list.
 
-Создайте нового пользователя, например, `alice`.
+Create a new user, say `alice`.
 
-Назначьте пользователю `alice` роли `HR Manager` и `UI: minimal access`, как вы это делали в <<assign-role,предыдущем>> разделе.
+Assign the `HR Manager` and `UI: minimal access` roles to `alice` as you did in the <<assign-role,previous>> section.
 
-Войдите в систему как `alice`. Вы увидите экран `Users` и сможете управлять пользователями и их шагами по онбордингу:
+Log in as `alice`. You will see the `Users` view and will be able to manage users and their onboarding steps:
 
 image::security/manager-role-4.png[align="center"]
 
 [[managers-row-level-role]]
-== Роль уровня строк для HR-менеджеров
+== Row-level Role for HR Managers
 
-В настоящее время HR-менеджеры могут создавать пользователей, назначать пользователю любой отдел и просматривать пользователей всех отделов.
+Currently, HR managers can create users, assign any department to a user, and see users of all departments.
 
-В этом разделе вы создадите _роль на уровне строк_ (_row-level role_), которая ограничивает доступ HR-менеджера к отделам и другим пользователям. Они смогут видеть и назначать только свой собственный отдел (тот, в котором они указаны в атрибуте `hrManager`).
+In this section, you will introduce a _row-level role_ which restricts access to departments and other users for an HR manager. They will be able to see and assign only their own department (the one where they are set in the `hrManager` attribute).
 
-В окне инструментов *Jmix* нажмите *New* (image:common/add.svg[]) -> *Row-level Role*:
+In the *Jmix* tool window, click *New* (image:common/add.svg[]) -> *Row-level Role*:
 
 image::security/rl-role-1.png[align="center", width="353"]
 
-В открывшемся диалоговом окне *New Row-level Role* введите:
+In the *New Row-level Role* dialog, enter:
 
 * *Role name*: `HR manager's departments and users`
 * *Role code*: `hr-manager-rl`
@@ -216,9 +216,9 @@ image::security/rl-role-1.png[align="center", width="353"]
 
 image::security/rl-role-2.png[align="center", width="635"]
 
-Нажмите *OK*.
+Click *OK*.
 
-Studio создаст и откроет аннотированный интерфейс:
+Studio will create and open an annotated interface:
 
 [source,java]
 ----
@@ -232,27 +232,27 @@ public interface HrManagerRlRole {
 }
 ----
 
-Кликните *Add Policy* -> *JPQL Policy* в верхней панели действий:
+Click *Add Policy* -> *JPQL Policy* in the top actions panel:
 
 image::security/rl-role-3.png[align="center", width="536"]
 
-В диалоге *Add JPQL Policy* введите:
+In the *Add JPQL Policy* dialog, enter:
 
 * *Entity*: `Department`
 * *Where clause*: `\{E}.hrManager.id = :current_user_id`
 
 image::security/rl-role-3-1.png[align="center", width="636"]
 
-Нажмите *OK*.
+Click *OK*.
 
-Кликните *Add Policy* -> *JPQL Policy* снова и введите:
+Click *Add Policy* -> *JPQL Policy* again and enter:
 
 * *Entity*: `User`
 * *Where clause*: `\{E}.department.hrManager.id = :current_user_id`
 
-Нажмите *OK*.
+Click *OK*.
 
-Интерфейс `HrManagerRlRole` будет содержать следующий код:
+The `HrManagerRlRole` interface will have the following code:
 
 [source,java]
 ----
@@ -280,44 +280,44 @@ public interface HrManagerRlRole {
     void user();
 }
 ----
-<1> Аннотация `@RowLevelRole` указывает, что интерфейс определяет роль на уровне строки.
-<2> `@JpqlRowLevelPolicy` определяет политику, которая будет применяться на уровне базы данных при чтении объекта.
-<3> Класс сущности, для которого применяется политика.
-<4> Раздел `where`, который должен быть добавлен для каждого оператора JPQL select для этой сущности. `\{E}` используется вместо псевдонима сущности в запросе. `:current_user_id` - это предопределенный параметр, устанавливаемый фреймворком для идентификатора текущего вошедшего в систему пользователя.
+<1> `@RowLevelRole` annotation indicates that the interface defines a row-level role.
+<2> `@JpqlRowLevelPolicy` defines a policy to be applied on the database level when reading the entity.
+<3> The entity class for which the policy is applied.
+<4> The `where` clause to be added for each JPQL select statement for this entity. `\{E}` is used instead of the entity alias in the query. `:current_user_id` is a predefined parameter set by the framework to the id of the currently logged-in user.
 
-Нажмите *Ctrl/Cmd+S* и переключитесь на запущенное приложение. Войдите в систему как администратор. Откройте экран *Security* -> *Row-level roles* и убедитесь, что в списке есть новая роль `HR manager's departments and users`.
+Press *Ctrl/Cmd+S* and switch to the running application. Log in as `admin`. Open *Security* -> *Row-level roles* view and make sure the new `HR manager's departments and users` role is in the list.
 
-Откройте экран *Role assignments* для `alice` и добавьте роль в таблицу *Row-level constraints*:
+Open *Role assignments* view for `alice` and add the role to the *Row-level roles* table:
 
 image::security/rl-role-4.png[align="center"]
 
-Нажмите на кнопку *OK*, чтобы сохранить назначение роли.
+Click *OK* to save the role assignments.
 
-Назначьте `alice` HR-менеджером для отдела:
+Set `alice` as HR Manager for a Department:
 
 image::security/rl-role-5.png[align="center"]
 
-Войдите в систему как `alice`.
+Log in as `alice`.
 
-На экране списка пользователей вы увидите только пользователей ее отдела:
+In the *Users* list view, you will see only users of her department:
 
 image::security/rl-role-6.png[align="center"]
 
-И `alice` может назначить пользователю только этот отдел:
+And `alice` can assign only this department to a user:
 
 image::security/rl-role-7.png[align="center", width="500"]
 
 [[summary]]
-== Резюме
+== Summary
 
-В этом разделе вы создали роли сотрудников и HR-менеджеров, чтобы ограничить доступ к приложению для разных групп пользователей.
+In this section, you have created HR Managers and Employees roles to restrict access to the application for different groups of users.
 
-Вы узнали, что:
+You have learned that:
 
-* {jmix-docs}/security/resource-roles.html[Ресурсная роль^] предоставляет пользователям разрешения на открытие экранов и работу с определенными объектами.
+* A {jmix-docs}/security/resource-roles.html[resource role^] gives users permissions to open views and to work with particular entities.
 
-* {jmix-docs}/security/row-level-roles.html[Роль уровня строки^], напротив, ограничивает способность пользователя просматривать определенные экземпляры для сущности, разрешенной ресурсной ролью.
+* A {jmix-docs}/security/row-level-roles.html[row-level role^], in contrast, restricts user's ability to read particular entity instances for an entity permitted by a resource role.
 
-* Роли назначаются пользователям во время выполнения с помощью экрана *Role assignment*, доступного на экране `User.detail`.
+* Roles are assigned to users at runtime using the *Role assignment* view available from the `User.detail` view.
 
-* Сгенерированная в новом проекте роль `UI: minimal access` необходима пользователю для входа в пользовательский интерфейс приложения.
+* The `UI: minimal access` role scaffolded in the project is required for a user to log in to the application UI.

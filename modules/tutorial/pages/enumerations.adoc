@@ -1,88 +1,88 @@
-= 4. Использование перечислений
+= 4. Using Enumerations
 
-В предыдущих главах вы реализовали управление отделами и шагами онбординга. Ваше приложение по умолчанию также имеет управление пользователями, которое взято из шаблона проекта.
+In the previous chapters, you implemented management of Steps and Departments. Your application also has the default User management which came from the project template.
 
-В этой главе вы добавите атрибут `onboardingStatus` в сущность `User` и отобразите его в пользовательском интерфейсе. Этот атрибут может иметь одно из трех значений: `Not started`, `In progress`, `Completed`.
+In this chapter, you will add the `onboardingStatus` attribute to the `User` entity and show it in the UI. This attribute can have one of three values: `Not started`, `In progress`, `Completed`.
 
 [[create-enum]]
-== Создание перечисления
+== Creating Enumeration
 
-Перечисление - это набор констант, который определяется во время разработки и не изменяется пользователями во время выполнения.
+An enumeration is a set of constants that is defined at design time and is not changed by users at runtime.
 
-Давайте создадим перечисление для использования в атрибуте `onboardingStatus`.
+Let's create an enumeration to use in the `onboardingStatus` attribute.
 
-Если ваше приложение запущено, остановите его сочетанием `Ctrl+C` в терминале.
+If your application is running, stop it by pressing `Ctrl+C` in the terminal.
 
-В окне инструментов *Jmix* нажмите *New* (image:common/add.svg[]) -> *Enumeration*:
+In the *Jmix* tool window, click *New* (image:common/add.svg[]) -> *Enumeration*:
 
 image::enumerations/enum-1.png[align="center",width=331]
 
-В окне *New Jmix Enumeration* введите `OnboardingStatus` в поле *Class* и выберите `Integer` в переключателях *Id type*:
+In the *New Jmix Enumeration* window, enter `OnboardingStatus` in the *Class* field and select `Integer` in the *Id type* radio buttons:
 
 image::enumerations/enum-2.png[align="center",width=503]
 
-Нажмите на кнопку *OK*.
+Click *OK*.
 
-Студия покажет дизайнер перечисления:
+Studio will show the enumeration designer:
 
 image::enumerations/enum-3.png[align="center"]
 
-Добавьте необходимые константы (`NOT_STARTED`, `IN_PROGRESS`, `COMPLETED`), нажав на кнопку *Add Value* (image:common/add.svg[]) на панели инструментов таблицы *Values*:
+Add the required constants (`NOT_STARTED`, `IN_PROGRESS`, `COMPLETED`) by clicking to the *Add Value* (image:common/add.svg[]) button in the toolbar of the *Values* table:
 
 image::enumerations/enum-4.png[align="center"]
 
-*Value* - это значение Java enum, *Id* - соответствующее значение, хранящееся в базе данных. Например, вместо значения `IN_PROGRESS` или его порядковой позиции (`1`) база данных будет содержать число `20`.
+The *Value* here is the value of Java enum, *Id* is the corresponding value stored in the database. For example, instead of `IN_PROGRESS` value or its ordinal position (`1`), the database will contain the number `20`.
 
-TIP: Мы рекомендуем использовать строковые идентификаторы перечисления, за исключением случаев, когда константы перечисления должны быть отсортированы в определенном порядке. Перечисление `OnboardingStatus` является хорошим примером необходимости сортировки: вы захотите отобразить константы именно в этом порядке.
+TIP: We recommend using `String` enum identifiers unless the enum constants should be sorted in a particular order. The `OnboardingStatus` enum is a good example of the need for sorting: you will want to show the constants in this exact order.
 
-Вы можете увидеть исходный код перечисления, если перейдете на вкладку *Text*:
+You can see the enumeration source code if you switch to the *Text* tab:
 
 image::enumerations/enum-5.png[align="center", width="588"]
 
 [[add-attr]]
-== Добавление атрибута к сущности и пользовательскому интерфейсу
+== Adding Attribute to Entity and UI
 
-Давайте добавим атрибут `onboardingStatus` к сущности `User`:
+Let's add the `onboardingStatus` attribute to the `User` entity:
 
-Дважды щелкните на сущность `User` в окне инструментов *Jmix* и выберите его последний атрибут (чтобы добавить новый атрибут в конец):
+Double-click on the `User` entity in *Jmix* tool window and select its last attribute (to add the new attribute to the end):
 
 image::enumerations/attribute-1.png[align="center"]
 
-Нажмите *Add* (image:common/add.svg[]) на панели *Attributes*. В диалоговом окне *New Attribute* введите `onboardingStatus` в поле *Name*, выберите `ENUM` в раскрывающемся списке *Attribute type* и `OnboardingStatus` в раскрывающемся списке *Type*:
+Click *Add* (image:common/add.svg[]) in the *Attributes* toolbar. In the *New Attribute* dialog, enter `onboardingStatus` into the *Name* field, select `ENUM` in the *Attribute type* dropdown and `OnboardingStatus` in the *Type* dropdown:
 
 image::enumerations/attribute-2.png[align="center"]
 
-Нажмите на кнопку *OK*.
+Click *OK*.
 
-Выберите атрибут `onboardingStatus` и нажмите на кнопку *Add to Views* (image:common/add-attribute-to-screens.svg[]) на панели *Attributes*:
+Select the `onboardingStatus` attribute and click the *Add to Views* (image:common/add-attribute-to-screens.svg[]) button in the *Attributes* toolbar:
 
 image::enumerations/attribute-3.png[align="center", width="491"]
 
-В появившемся диалоговом окне будут показаны все экраны, на которых отображается сущность `User`. Выберите оба экрана `User.detail` и `User.list`:
+The dialog window that appears will show all views that display the `User` entity. Select both `User.detail` and `User.list` views:
 
 image::enumerations/attribute-4.png[align="center", width="589"]
 
-Нажмите на кнопку *OK*.
+Click *OK*.
 
-Studio добавит атрибут `onboardingStatus` в компонент `dataGrid` экрана `User.list` и в компонент `formLayout` экрана `User.detail`.
+Studio will add the `onboardingStatus` attribute to `dataGrid` of the `User.list` view and to `formLayout` of the `User.detail` view.
 
 [[run-app]]
-== Запуск приложения
+== Running the Application
 
-Перед запуском приложения - напишите liquibase конфиг для нового атрибута.
+Before running the application, write a Liquibase changelog for the new attribute.
 
-Создайте файл `040-add-user-onboarding-status.xml` - в разделе *Data Stores* -> *Main Data Store* -> *Liquibase: changelog.xml* окна инструментов *Jmix*, либо в каталоге `src/main/resources/com/company/onboarding/liquibase/changelog` в дереве проекта. Он должен добавлять в таблицу `USER_` столбец `ONBOARDING_STATUS`.
+Create the `040-add-user-onboarding-status.xml` file under *Data Stores* -> *Main Data Store* -> *Liquibase: changelog.xml* in the *Jmix* tool window, or in the `src/main/resources/com/company/onboarding/liquibase/changelog` directory in the project tree. It should add the `ONBOARDING_STATUS` column to the `USER_` table.
 
-[NOTE,caption=Примечание]
+[NOTE]
 ====
-Может показаться, что раз новый атрибут добавляется к таблице `USER_`, то и править нужно уже существующий скрипт `010-init-user.xml`, который эту таблицу создает. Но это не так.
+It may seem that because the new attribute is added to the `USER_` table, you should edit the existing `010-init-user.xml` script that creates this table. This is not the case.
 
-Выполнив changeset, Liquibase запоминает его в служебной таблице `DATABASECHANGELOG` вместе с контрольной суммой. Если изменить тело уже выполненного changeset, сумма перестанет совпадать и приложение не запустится - Liquibase сообщит об ошибке валидации. При этом сам столбец все равно не появится: changeset помечен как выполненный и повторно не запускается. Правка сработала бы только на пустой базе, созданной с нуля.
+After executing a changeset, Liquibase records it in the `DATABASECHANGELOG` service table together with its checksum. If you change the body of an already executed changeset, the checksum will no longer match and the application will not start: Liquibase will report a validation error. The column will not appear either, because the changeset is marked as executed and is not run again. Editing it would work only for an empty database created from scratch.
 
-История изменений в Liquibase неизменяема, а схема наращивается новыми changeset. Для поддерживаемых СУБД Studio поступает так же: на каждое изменение модели данных она генерирует новый файл, а не переписывает старые.
+Liquibase change history is immutable, and the schema is extended with new changesets. Studio does the same for supported databases: it generates a new file for each data model change instead of rewriting an old one.
 ====
 
-.Готовый конфиг
+.Completed changelog
 [%collapsible]
 ====
 [source,xml]
@@ -103,36 +103,36 @@ Studio добавит атрибут `onboardingStatus` в компонент `d
 </databaseChangeLog>
 ----
 
-Здесь один changeset с `addColumn`. Тип столбца - `int`, потому что при создании перечисления вы выбрали `Integer` в переключателях *Id type*. В базе хранится идентификатор константы (`10`, `20`, `30`), а не ее имя.
+This changelog contains one changeset with `addColumn`. The column type is `int` because you selected `Integer` in the *Id type* radio buttons when creating the enumeration. The database stores the constant id (`10`, `20`, `30`), not its name.
 ====
 
-Запустите приложение из консоли:
+Run the application from the terminal:
 
 [source,bash]
 ----
 ./gradlew bootRun
 ----
 
-Откройте `++http://localhost:8080++` в вашем веб-браузере и войдите в приложение с учетными данными администратора (`admin` / `admin`).
+Open `++http://localhost:8080++` in your web browser and log in to the application with `admin` / `admin` credentials.
 
-Раскройте меню *Application* и нажмите на подпункт *Users*. Вы увидите столбец `Onboarding status` на экране `User.list`.
+Click on the `Users` item in the `Application` menu. You will see the `Onboarding status` column in the `User.list` view.
 
-Нажмите на кнопку *Create*. Компонент UI для выбора статуса показан в нижней части формы:
+Click *Create*. The UI control for selecting a status is shown at the bottom of the form:
 
 image::enumerations/run-app-4.png[align="center", width="896"]
 
 [[init-value]]
-== Установка начального значения для атрибута
+== Setting Initial Value for Attribute
 
-Для вновь созданного пользователя атрибут `onboardingStatus` должен быть автоматически установлен в значение `Not started`. В этом разделе вы узнаете, как настроить экран `User.detail` для инициализации этого атрибута.
+For a newly created user, the `onboardingStatus` attribute should be automatically set to `Not started`. In this section, you will learn how to configure the `User.detail` view to initialize this attribute.
 
-Откройте класс `UserDetailView.java` и найдите его метод `onInitEntity()`:
+Open the `UserDetailView.java` class and find its `onInitEntity()` method:
 
 image::enumerations/init-attr-1.png[align="center", width="915"]
 
-Этот метод представляет собой обработчик событий, вызываемый фреймворком при открытии экрана деталей для нового экземпляра сущности. Объект `event`, переданный методу, содержит новую сущность.
+This method is an event handler invoked by the framework when the detail view is opened for a new entity instance. The `event` object passed to the method contains the new entity.
 
-Добавьте следующие строки в конец тела метода:
+Add the following lines to the end of the method body:
 
 [source,java]
 ----
@@ -145,28 +145,28 @@ public void onInitEntity(InitEntityEvent<User> event) {
 }
 ----
 
-Если вы переключитесь на запущенное приложение, закроете экран деталей и снова нажмете *Create*, вы увидите, что `Onboarding status` инициализируется автоматически:
+If you switch to the running application, close the detail view and click *Create* again, you will see the `Onboarding status` initialized automatically:
 
 image::enumerations/init-attr-2.png[align="center", width="872"]
 
 [TIP]
 ====
-Чтобы сгенерировать обработчик событий с нуля, нажмите *Generate Handler* на панели действий в верхней части редактора кода и выберите `InitEntityEvent` в разделе *Controller handlers*:
+To generate the handler method from scratch, click *Generate Handler* in the actions panel on top of the code editor and select `InitEntityEvent` in the *Controller handlers* section of the tree:
 
 image::enumerations/init-attr-3.png[align="center",width="947"]
 ====
 
 [[summary]]
-== Резюме
+== Summary
 
-В этом разделе вы добавили атрибут `Onboarding status` в сущность `User`. Этот атрибут представляет собой перечисление с тремя возможными значениями: `Not started`, `In progress`, `Completed`.
+In this section, you have added the `Onboarding status` attribute to the `User` entity. This attribute is an enumeration with three possible values: `Not started`, `In progress`, `Completed`.
 
-Вы узнали, что:
+You have learned that:
 
-* {jmix-docs}/data-model/enumerations.html[Перечисления^] представляют собой наборы констант, которые определяются во время разработки.
+* {jmix-docs}/data-model/enumerations.html[Enumerations^] represent sets of constants that are defined at design time.
 
-* В Jmix константа перечисления имеет значение и идентификатор. Идентификатор хранится в базе данных вместо константы или ее порядкового значения.
+* In Jmix, an enumeration constant has a value and an id. The id is stored in the database instead of the constant or its ordinal value.
 
-* Вновь созданный атрибут сущности можно легко добавить к существующим экранам с помощью кнопки *Add to Views* (image:common/add-attribute-to-screens.svg[]) на панели *Attributes* дизайнера сущностей.
+* A newly created entity attribute can be easily added to existing views using the *Add to Views* (image:common/add-attribute-to-screens.svg[]) button in the *Attributes* toolbar of the entity designer.
 
-* Обработчик `InitEntityEvent` можно использовать для инициализации атрибутов нового экземпляра сущности на экране деталей. Заглушка обработчика может быть сгенерирована Studio, если вы нажмете *Generate Handler* на панели действий редактора кода.
+* The `InitEntityEvent` handler can be used to initialize attributes of a new entity instance in a detail view. The handler stub can be generated by Studio if you click *Generate Handler* in the actions panel of the code editor.

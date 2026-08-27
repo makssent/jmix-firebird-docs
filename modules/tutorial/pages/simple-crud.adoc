@@ -1,159 +1,158 @@
-= 2. Простой CRUD
+= 2. Simple CRUD
 
-Давайте начнем с реализации простейшей функции вашего Onboarding приложения: управление шагами (Steps) онбординга.
+Let's start from implementing the simplest feature of your Onboarding application: management of onboarding Steps.
 
-Шаг онбординга - это действие, которое новый сотрудник должен выполнить в течение определенного периода времени. Приложение сохраняет название действия и его максимальную продолжительность. Пользователь с правами администратора будет управлять списком, создавать новые шаги, редактировать или удалять их с помощью специальных экранов. После создания шаг может быть назначен сотрудникам HR-менеджером.
+Essentially, an onboarding Step is an action that needs to be done within certain period of time by a new hire. The application stores the name of the action and its maximum duration. A user with admin access rights will manage the list, create new Steps, edit or remove them using dedicated views.  Once created, a Step can be assigned to  employees (User) by HR manager.
 
-Функция будет включать в себя следующее:
+The feature will include the following:
 
-* Сущность Шаг (`Step`).
-* Таблица базы данных для сущности.
-* CRUD-экраны для работы с сущностью.
+* The `Step` entity.
+* A database table for the entity.
+* CRUD views for working with the entity.
 
 [[create-entity]]
-== Создание сущности Step
+== Creating Step Entity
 
-Сущность имеет всего несколько простых атрибутов:
+The entity has just a few simple attributes:
 
 image::simple-crud/step-diagram.svg[align="center"]
 
-Если ваше приложение запущено, остановите его сочетанием `Ctrl+C` в терминале.
+If your application is running, stop it by pressing `Ctrl+C` in the terminal.
 
-В окне инструментов *Jmix* нажмите *New* (image:common/add.svg[]) -> *JPA Entity*:
+In the *Jmix* tool window, click *New* (image:common/add.svg[]) -> *JPA Entity*:
 
 image::simple-crud/create-entity-1.png[align="center",width=391]
 
-Появится диалоговое окно *New JPA Entity*. Введите `Step` в поле *Class* и установите флажок *Traits* -> *Versioned*:
+The *New JPA Entity* dialog appears. Enter `Step` into the *Class* field and select the *Traits* -> *Versioned* checkbox:
 
 image::simple-crud/create-entity-2.png[align="center",width=492]
 
-Нажмите *OK*.
+Click *OK*.
 
-Студия создаст класс сущности и откроет дизайнер:
+Studio will create the entity class and open the entity designer:
 
 image::simple-crud/create-entity-3.png[align="center"]
 
-Как вы можете видеть, новая сущность имеет два атрибута:
+As you can see, the new entity has two attributes:
 
-* `id` - это идентификатор, необходимый для любой сущности. Он сопоставляется со столбцом `ID`, который является первичным ключом таблицы базы данных.
+* `id` is the identifier required for any entity. It is mapped to the `ID` column, which is the primary key of the database table.
+* `version` attribute is added because you have selected the *Versioned* trait for the entity. With the help of this attribute, the framework provides optimistic locking of entity instances. We recommend always using optimistic locking for entities unless you have a good reason not to do it.
 
-* атрибут `version` добавляется, потому что вы выбрали черту *Versioned* для сущности. С помощью этого атрибута фреймворк обеспечивает оптимистичную блокировку экземпляров сущностей. Мы рекомендуем всегда использовать оптимистичную блокировку для сущностей, если только у вас нет веской причины не делать этого.
+Let's add the `name` attribute to the entity.
 
-Давайте добавим атрибут `name` к сущности.
+Click *Add* (image:common/add.svg[]) in the *Attributes* toolbar.
 
-Нажмите *Add* (image:common/add.svg[]) на панели *Attributes*.
-
-Появится диалоговое окно *New Attribute*. Введите `name` в поле *Name* и установите флажок *Mandatory*:
+The *New Attribute* dialog appears. Enter `name` into the *Name* field and select the *Mandatory* checkbox:
 
 image::simple-crud/create-entity-4.png[align="center"]
 
-Взгляните на наиболее важные параметры атрибута:
+Take a look at the most important parameters of the attribute:
 
-* *Attribute type* - значение `DATATYPE` означает, что атрибут имеет простой тип, такой как String, Integer и так далее.
-* *Type* определяет Java-тип атрибута.
-* *Length* определяет длину столбца базы данных и, в случае строковых атрибутов, максимальное количество символов, которые пользователь может ввести в соответствующее текстовое поле в пользовательском интерфейсе.
-* Если установлен флажок *Mandatory*, столбец базы данных будет создан с ненулевым ограничением, а в поле пользовательского интерфейса потребуется ввести значение.
-* *Column* определяет имя для сопоставленного столбца базы данных.
+* *Attribute type* - the `DATATYPE` value means that the attribute is of a simple type like String, Integer, etc.
+* *Type* defines the Java type of the attribute.
+* *Length* specifies the length of the database column and, in the case of String attributes, the maximum number of characters a user can enter into a corresponding text field in the UI.
+* When *Mandatory* checkbox is selected, the database column will be created with a non-null constraint and a UI field will require a value.
+* *Column* defines a name for the mapped database column.
 
-Нажмите кнопку *OK*. Атрибут `name` будет добавлен в список атрибутов.
+Click *OK*. The `name` attribute will be added to the attributes list.
 
-Теперь давайте добавим атрибут `duration`, который представляет максимальное количество дней для завершения шага.
+Now let's add the `duration` attribute which represents the maximum number of days to complete the step.
 
-Нажмите *Add* (image:common/add.svg[]) на панели *Attributes*. В диалоговом окне *New Attribute* введите `duration` в поле *Name*, выберите `Integer` в поле *Type* и установите флажок *Mandatory*:
+Click *Add* (image:common/add.svg[]) in the *Attributes* toolbar. In the *New Attribute* dialog, enter `duration` into the *Name* field, select `Integer` in the *Type* field and select the *Mandatory* checkbox:
 
 image::simple-crud/create-entity-5.png[align="center"]
 
-Нажмите кнопку *OK*. Атрибут `duration` появится в списке атрибутов.
+Click *OK*. The `duration` attribute will appear in the attributes list.
 
-Наконец, добавьте атрибут `sortValue`, который будет использоваться для упорядочивания шагов. Выберите `Integer` в поле *Type* и установите флажок *Mandatory*:
+Finally, add the `sortValue` attribute which will be used for ordering steps. Select `Integer` in the *Type* field and select the *Mandatory* checkbox:
 
 image::simple-crud/create-entity-6.png[align="center"]
 
-Итоговое состояние сущности должно выглядеть следующим образом:
+The final state of the entity should look like this:
 
 image::simple-crud/create-entity-7.png[align="center"]
 
-Вы можете использовать кнопки *Up* (image:common/move-up.svg[]) / *Down* (image:common/move-down.svg[]) на панели *Attributes*, чтобы изменить порядок атрибутов.
+You can use the *Up* (image:common/move-up.svg[]) / *Down* (image:common/move-down.svg[]) buttons in the *Attributes* toolbar to reorder the attributes.
 
-Давайте посмотрим на результирующий класс сущности, созданный дизайнером. Перейдите на вкладку *Text* в нижней части дизайнера:
+Let's look at the resulting entity class generated by the designer. Switch to the *Text* tab at the bottom:
 
 image::simple-crud/create-entity-8.png[align="center"]
 
-Если у вас есть опыт работы с JPA, вы увидите знакомые аннотации: `@Entity`, `@Table`, `@Column` и так далее. Есть также несколько аннотаций, специфичных для Jmix. Наиболее важным из них является `@JmixEntity` в заголовке класса. В общем, любой POJO может быть сущностью в Jmix, если он помечен `@JmixEntity`.
+If you have experience with JPA, you will see familiar annotations: `@Entity`, `@Table`, `@Column`, etc. There are also a few annotations specific to Jmix. The most important one is `@JmixEntity` on the class header. In general, any POJO can be an entity in Jmix if it is annotated with `@JmixEntity`.
 
-Класс сущности можно редактировать вручную. Когда вы вернетесь на вкладку *Designer*, в нем будут отражены изменения. Например, если вы удалите `nullable = false` и `@NotNull` из атрибута, дизайнер снимет для него флажок *Mandatory*.
+The entity class can be edited manually, and when you switch back to the *Designer* tab, it will reflect the changes. For example, if you remove the `nullable = false` and `@NotNull` from an attribute, the designer will unselect the *Mandatory* checkbox for it.
 
 [[create-views]]
-== Создание CRUD-экранов
+== Creating CRUD Views
 
-Когда класс сущности будет готов, вы можете сгенерировать для него CRUD-экраны.
+When the entity class is ready, you can generate CRUD views for it.
 
-На панели действий в верхней части дизайнера сущностей выберите *Views* -> *Create view*:
+In the actions panel at the top of the entity designer, click *Views* -> *Create view*:
 
 image::simple-crud/create-screens-1.png[align="center", width="457"]
 
-На первом шаге мастера создания экранов выберите шаблон `Entity list and detail views`:
+On the first step of the view creation wizard, select the `Entity list and detail views` template:
 
 image::common/screen-wizard-1.png[align="center",width="776"]
 
-Нажмите кнопку *Next*.
+Click *Next*.
 
-На втором шаге мастер позволяет вам выбрать Java-пакет и имена для сгенерированных экранов:
+On the second step, the wizard lets you select the package and names for the generated views:
 
 image::simple-crud/create-screens-3.png[align="center"]
 
-Примите предложенные значения и нажмите кнопку *Next*.
+Accept the suggested values and click *Next*.
 
-На следующем шаге вы можете задать некоторые параметры для экранов:
+On the next step, you can set some options for the views:
 
 image::simple-crud/create-screens-4.png[align="center"]
 
-Все эти параметры могут быть изменены позже на созданных экранах, поэтому просто примите предложенные значения и нажмите *Next*.
+All these options can be modified later in the created views, so just accept the suggested values and click *Next*.
 
-На следующем шаге мастер позволяет вам настроить фетч-план для экрана списка сущностей:
+On the next step, the wizard lets you set up the _fetch plan_ for the entity list view:
 
 image::simple-crud/create-screens-5.png[align="center"]
 
-NOTE: Коротко говоря, фетч-план (план выборки) определяет, какие атрибуты и связанные сущности должны быть загружены для экрана.
+NOTE: In short, a fetch plan determines what attributes and referenced entities must be loaded for the view.
 
-Сущность `Step` очень проста, поэтому нет необходимости настраивать для нее фетч-план. Мы подробнее рассмотрим фетч-планы позже, когда будем иметь дело с более сложными сущностями и экранами.
+The `Step` entity is very simple, so there is no need to adjust the fetch plan for it. We will take a closer look at fetch plans later when we deal with more complex entities and views.
 
-Нажмите кнопку *Next*.
+Click *Next*.
 
-Теперь мастер позволяет вам настроить фетч-план для экрана деталей:
+Now the wizard lets you set up the fetch plan for the entity detail view:
 
 image::simple-crud/create-screens-6.png[align="center"]
 
-Опять же, нет смысла менять предложенный фетч-план - он просто включает в себя все атрибуты.
+Again, there is no point in changing the suggested fetch plan - it just includes all attributes.
 
-Нажмите кнопку *Next*.
+Click *Next*.
 
-На заключительном шаге мастера он позволяет вам устанавливать заголовки экранов:
+At the final step of the wizard, it lets you set titles for the views:
 
 image::simple-crud/create-screens-7.png[align="center"]
 
-Примите предложенные значения и нажмите кнопку *Create*.
+Accept the suggested values and click *Create*.
 
-Studio сгенерирует два экрана: `Step.list` и `Step.detail` и откроет их исходный код.
+Studio will generate two views: `Step.list` and `Step.detail` and open their source code.
 
-NOTE: Каждый экран состоит из двух частей: дескриптора и контроллера. Дескриптор - это XML-файл, определяющий компоненты экрана и их расположение. Контроллер - это класс Java, который может содержать обработчики событий и другую логику.
+NOTE: Each view consists of two parts: descriptor and controller. The descriptor is an XML file defining view components and layout. Controller is a Java class that can contain event handlers and other logic.
 
-XML-дескриптор сгенерированного экрана `Step.list` будет отображен в дизайнере экранов Studio:
+The XML descriptor of the generated `Step.list` view will be displayed in the Studio view designer:
 
 image::simple-crud/create-screens-8.png[align="center",width="1110"]
 
-На скриншоте подсвечены основные части дизайнера экранов. Вы познакомитесь с ними позже.
+The main parts of the designer are highlighted on the picture above. You will take a closer look at them later in this guide.
 
 [[run-app]]
-== Запуск приложения
+== Running the Application
 
-После создания сущности и CRUD-экранов для нее вы можете запустить приложение, чтобы увидеть новую функциональность в действии.
+After creating the entity and CRUD views for it, you can run the application to see the new feature in action.
 
-Но сначала для новой сущности нужно создать таблицу в базе данных.
+But first, you need to create a database table for the new entity.
 
-Для СУБД, которые Jmix поддерживает штатно, этот шаг выполняется сам: перед запуском Studio сравнивает модель данных со схемой базы и генерирует Liquibase changelog для недостающих объектов. С Firebird так не выйдет - автогенерация недоступна, и скрипт придется написать вручную.
+For DBMSs supported by Jmix out of the box, this step is automatic: before starting the application, Studio compares the data model with the database schema and generates a Liquibase changelog for missing objects. This does not work with Firebird: automatic generation is unavailable, so you must write the script manually.
 
-Создайте файл `020-create-step.xml` - в разделе *Data Stores* -> *Main Data Store* -> *Liquibase: changelog.xml* окна инструментов *Jmix*, либо в каталоге `src/main/resources/com/company/onboarding/liquibase/changelog` в дереве проекта:
+Create `020-create-step.xml`. In the *Jmix* tool window, create it under *Data Stores* -> *Main Data Store* -> *Liquibase: changelog.xml*. Alternatively, create it in the `src/main/resources/com/company/onboarding/liquibase/changelog` directory in the project tree:
 
 [source,xml]
 ----
@@ -187,37 +186,38 @@ image::simple-crud/create-screens-8.png[align="center",width="1110"]
 </databaseChangeLog>
 ----
 
-Таблица повторяет сущность `Step`: по колонке на каждый атрибут, все объявлены `nullable="false"`, как и поля класса.
+The table mirrors the `Step` entity: it has one column for each attribute, and all columns are declared `nullable="false"`, just like the class fields.
 
-Отдельного внимания заслуживает тип колонки `ID`. Вместо конкретного типа здесь стоит свойство `${uuid.type}`, значение которого объявляет changelog аддона, подключенный в xref:project-setup.adoc#firebird-liquibase[настройке проекта]. Для Firebird оно раскроется в `varchar(36)`, поскольку отдельного типа UUID в этой СУБД нет.
+The `ID` column type deserves special attention. Instead of a concrete type, it uses the `${uuid.type}` property declared by the add-on changelog included during xref:project-setup.adoc#firebird-liquibase[project setup]. For Firebird, this property resolves to `varchar(36)` because the DBMS has no dedicated UUID type.
 
-Подключать файл отдельно не нужно: главный changelog включает каталог целиком через `includeAll`. Скрипты выполняются в алфавитном порядке имен, поэтому числовой префикс задает очередность - `020-create-step.xml` отработает после `010-init-user.xml`.
+You do not need to include this file separately: the master changelog includes the whole directory using `includeAll`. Scripts are executed in alphabetical order by file name, so the numeric prefix determines the sequence: `020-create-step.xml` runs after `010-init-user.xml`.
 
-Теперь запустите приложение из консоли, как вы делали в xref:project-setup.adoc#run-app[предыдущей главе]:
+Now run the application from the command line as you did in the xref:project-setup.adoc#run-app[previous chapter]:
 
 [source,bash]
 ----
 ./gradlew bootRun
 ----
 
-Скрипты Liquibase выполняются при старте приложения. В выводе команды появится строка о создании таблицы:
+Liquibase changelogs run when the application starts. The command output will contain a line indicating that the table was created:
 
 [source]
 ----
 Table STEP created
 ----
 
-После старта сервера откройте `++http://localhost:8080++` в вашем веб-браузере и войдите в приложение с учетными данными администратора: имя пользователя - `admin`, пароль - `admin`.
+When the application is ready, open `++http://localhost:8080++` in your web browser and log in to the application with `admin` / `admin` credentials.
 
-Раскройте меню *Application* и нажмите на подпункт *Steps*. Вы увидите экран `Step.list`:
+Click on the `Steps` item in the `Application` menu. You will see the `Step.list` view:
 
 image::simple-crud/run-app-4.png[align="center"]
 
-Нажмите на кнопку *Create*. Откроется экран `Step.detail`:
+Click *Create*. The `Step.detail` view will open:
 
 image::simple-crud/run-app-5.png[align="center"]
 
-Используя экраны списка и деталей, создайте несколько шагов онбординга со следующими параметрами:
+Using the list and detail views, create a few onboarding steps with the following parameters:
+
 
 |===
 |Name |Duration |Sort value
@@ -244,14 +244,14 @@ image::simple-crud/run-app-5.png[align="center"]
 |===
 
 [[summary]]
-== Резюме
+== Summary
 
-В этом разделе вы создали самую простую функциональность приложения: управление шагами онбординга.
+In this section, you have created the simplest feature of the application: onboarding steps management.
 
-Вы узнали, что:
+You have learned that:
 
-* В Studio есть визуальный конструктор для создания и редактирования классов {jmix-docs}/data-model/entities.html[сущностей^] и атрибутов.
-* Оптимистичная блокировка рекомендуется для большинства сущностей. Она используется, если вы выбираете для сущности {jmix-docs}/data-model/entities.html#traits[черту^] *Versioned*.
-* Studio может создавать CRUD-экраны для сущности с помощью шаблонов.
-* В главное меню приложения добавляется экран списка сущностей.
-* Перед запуском приложения Studio сравнивает модель данных и схему базы данных. Если есть разница, она генерирует и исполняет {jmix-docs}/data-model/db-migration.html[Liquibase changelog^].
+* Studio has a visual designer for creating and editing {jmix-docs}/data-model/entities.html[entity^] classes and attributes.
+* Optimistic locking is recommended for most entities. It is used if you select the *Versioned* {jmix-docs}/data-model/entities.html#traits[trait^] for the entity.
+* Studio can generate CRUD views for an entity by templates.
+* An entity list view is added to the main menu of the application.
+* Studio can generate and execute a {jmix-docs}/data-model/db-migration.html[Liquibase changelog^] automatically for supported databases, but Firebird changelogs must be written manually.

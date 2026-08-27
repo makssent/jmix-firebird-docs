@@ -1,42 +1,42 @@
-= Пример переноса приложения на Firebird
+= Example of Migrating an Application to Firebird
 
-В этом разделе рассматривается реальный перенос готового Jmix-приложения с HSQLDB на Firebird. Основой послужило B2B CRM из набора Jmix Demo, а результат переноса опубликован в репозитории https://github.com/makssent/jmix-crm-firebird[jmix-crm-firebird^].
+This section describes a real-world migration of an existing Jmix application from HSQLDB to Firebird. It uses the B2B CRM from the Jmix Demo collection as its basis. The migrated application is published in the https://github.com/makssent/jmix-crm-firebird[jmix-crm-firebird^] repository.
 
-Перенос проходил последовательно: к исходному приложению были подключены аддон и JDBC-драйвер, затем были адаптированы существующие changelog-и и тестовое окружение. Первый запуск на чистой базе выявил две дополнительные проблемы, после решения которых приложение запустилось, а набор автоматических тестов был успешно выполнен с Firebird datasource.
+The migration was performed in stages: the add-on and JDBC driver were added to the original application, then the existing changelogs and test environment were adapted. The first startup with an empty database revealed two additional problems. After they were resolved, the application started successfully and the automated test suite passed with a Firebird datasource.
 
 [.text-center]
-.Исходное приложение и этапы переноса
+.Original application and migration stages
 [cols="1,1,1,1,1",options="header"]
 |===
-|Исходное приложение
-|Подключение
-|Адаптация
-|Запуск
-|Проверка
+|Original application
+|Connection
+|Adaptation
+|Startup
+|Verification
 
-|B2B CRM на HSQLDB
-|Аддон, Jaybird и Firebird datasource
-|Liquibase и тестовое окружение
-|Решение обнаруженных проблем
-|Работающее приложение и успешные тесты
+|B2B CRM on HSQLDB
+|Add-on, Jaybird, and Firebird datasource
+|Liquibase and test environment
+|Resolution of detected problems
+|Working application and successful tests
 |===
 
 [[source-application]]
-== Исходное приложение
+== Original Application
 
-Для переноса был взят https://github.com/jmix-framework/jmix-crm[официальный B2B CRM^] — полноценное демонстрационное приложение на Jmix 3.0.1 и Java 21. Исходное состояние соответствовало коммиту `e4e31cd4cfb2906fa881434ebabb717592acb187` и использовало файловую HSQLDB как основной источник данных.
+The application selected for migration was the https://github.com/jmix-framework/jmix-crm[official B2B CRM^], a full-featured demo application based on Jmix 3.0.1 and Java 21. The original state corresponded to commit `e4e31cd4cfb2906fa881434ebabb717592acb187` and used a file-based HSQLDB database as its primary data source.
 
-CRM содержит клиентов, каталог, заказы, счета, платежи, пользовательские задачи, аналитику и отчёты. В проекте также используются аудит, динамические атрибуты и другие аддоны Jmix. Поэтому перенос проверял интеграцию Firebird не только на минимальном приложении, но и на развитой модели данных, пользовательском интерфейсе и существующем наборе тестов.
+The CRM includes customers, a product catalog, orders, invoices, payments, user tasks, analytics, and reports. The project also uses auditing, dynamic attributes, and other Jmix add-ons. Therefore, this migration tested the Firebird integration not only with a minimal application, but also with an extensive data model, user interface, and existing test suite.
 
-.B2B CRM до переноса на Firebird
-image::https://raw.githubusercontent.com/jmix-framework/jmix-crm/master/images/screenshots/dashboard.png[Dashboard исходного приложения B2B CRM,align="center",width="900"]
+.B2B CRM before migration to Firebird
+image::https://raw.githubusercontent.com/jmix-framework/jmix-crm/master/images/screenshots/dashboard.png[Dashboard of the original B2B CRM application,align="center",width="900"]
 
-Это изображение показывает исходное приложение. Работа того же приложения с Firebird подтверждалась отдельно после переноса.
+This image shows the original application. The operation of the same application with Firebird was verified separately after the migration.
 
 [[connect-firebird]]
-== Подключение Firebird
+== Connecting Firebird
 
-Первый этап переноса зафиксирован в https://github.com/makssent/jmix-crm-firebird/commit/48d1c6e2c58bdbdcf6eb9468c36f54f73f0eeedb[коммите `init firebird`^]. Зависимость HSQLDB была заменена стартером аддона и драйвером Jaybird:
+The first migration stage is recorded in the https://github.com/makssent/jmix-crm-firebird/commit/48d1c6e2c58bdbdcf6eb9468c36f54f73f0eeedb[`init firebird` commit^]. The HSQLDB dependency was replaced with the add-on starter and the Jaybird driver:
 
 [source,groovy,subs="attributes+"]
 ----
@@ -44,9 +44,9 @@ implementation '{addon-group}:jmix-firebird-starter:{addon-version}'
 runtimeOnly 'org.firebirdsql.jdbc:jaybird:{jaybird-version}'
 ----
 
-Стартер регистрирует Firebird-реализации, необходимые Jmix и EclipseLink, а Jaybird устанавливает JDBC-соединение с сервером. Драйвер подключается отдельно, поскольку он не входит в стартер как транзитивная runtime-зависимость.
+The starter registers the Firebird implementations required by Jmix and EclipseLink, while Jaybird establishes the JDBC connection to the server. The driver is added separately because it is not included in the starter as a transitive runtime dependency.
 
-В `application.properties` параметры HSQLDB были заменены настройками подготовленной базы Firebird. Кроме JDBC URL и учётных данных потребовалось явно указать драйвер и тип СУБД:
+In `application.properties`, the HSQLDB parameters were replaced with the settings for a prepared Firebird database. In addition to the JDBC URL and credentials, the driver and DBMS type had to be specified explicitly:
 
 [source,properties]
 ----
@@ -57,75 +57,75 @@ main.datasource.driver-class-name=org.firebirdsql.jdbc.FBDriver
 jmix.data.dbms-type=firebird
 ----
 
-Свойство `jmix.data.dbms-type` позволяет Jmix выбрать реализации, зарегистрированные аддоном. Существовавшее свойство `main.liquibase.change-log` менять не потребовалось: оно уже указывало на корневой changelog приложения и не являлось частью подключения Firebird.
+The `jmix.data.dbms-type` property enables Jmix to select the implementations registered by the add-on. The existing `main.liquibase.change-log` property did not need to be changed: it already referenced the application's root changelog and was not part of the Firebird connection configuration.
 
-Эти изменения представляют обычную настройку Firebird для основного источника данных. Полное описание зависимостей и свойств приведено в xref:index.adoc#configuration[разделе о подключении Firebird].
+These changes constitute the standard configuration of Firebird as the primary data source. For a complete description of the dependencies and properties, see xref:index.adoc#configuration[Connecting Firebird].
 
 [[adapt-liquibase]]
-== Адаптация Liquibase
+== Adapting Liquibase
 
-После смены datasource существующие init-changelog-и CRM потребовалось адаптировать к Firebird. Фактические изменения собраны в https://github.com/makssent/jmix-crm-firebird/commit/213b0b3717eced383e9fefa3d0b5b4e2fcf22ff9[коммите `init liquibase firebird`^].
+After changing the datasource, the existing CRM init changelogs had to be adapted for Firebird. The actual changes are collected in the https://github.com/makssent/jmix-crm-firebird/commit/213b0b3717eced383e9fefa3d0b5b4e2fcf22ff9[`init liquibase firebird` commit^].
 
-Сначала перед changelog-ами модулей Jmix и приложения был подключён changelog аддона. Он определяет значения свойств типов для Firebird. После этого в init-файле сущностей тип UUID-колонок был заменён с литерального `UUID` на `${uuid.type}`. В changeset-ах, которые уже ограничивали выполнение списком СУБД, к атрибуту `dbms` был добавлен `firebird`, чтобы Liquibase создавал демонстрационных пользователей и назначения ролей также в новой базе.
+First, the add-on changelog was included before the changelogs of the Jmix modules and the application. It defines Firebird-specific type property values. Next, in the entity initialization file, the literal `UUID` type of UUID columns was replaced with `${uuid.type}`. For changesets whose execution was already restricted by a list of DBMSs, `firebird` was added to the `dbms` attribute so that Liquibase would also create demo users and role assignments in the new database.
 
-.Основные изменения конфигурации и Liquibase
+.Main configuration and Liquibase changes
 [source,xml]
 ----
-<!-- Корневой changelog: нормальная часть подключения Firebird -->
+<!-- Root changelog: standard Firebird integration -->
 <include file="/io/github/makssent/jmix/firebird/liquibase/changelog.xml"/>
 
-<!-- Init-файл CRM: адаптация существующей схемы -->
+<!-- CRM initialization file: adapting the existing schema -->
 <column name="ID" type="${uuid.type}"/>
 
-<!-- Существующий фильтр CRM дополнен Firebird -->
+<!-- Firebird added to an existing CRM filter -->
 <insert tableName="USER_"
         dbms="postgresql, mssql, hsqldb, firebird">
 ----
 
-Таким образом, включение changelog аддона относится к нормальной интеграции Firebird, а изменения `${uuid.type}` и `dbms` — к адаптации уже существующих Liquibase-файлов конкретного приложения. Общий порядок настройки описан в xref:index.adoc#liquibase[разделе о подключении], а ручное создание последующих changeset-ов — в xref:liquibase-changelog.adoc[разделе о создании Liquibase changelog].
+Thus, including the add-on changelog is part of the standard Firebird integration, while the `${uuid.type}` and `dbms` changes adapt the existing Liquibase files of this specific application. The general configuration procedure is described in xref:index.adoc#liquibase[Connecting Firebird], and the manual creation of subsequent changesets is covered in xref:liquibase-changelog.adoc[Creating a Liquibase Changelog].
 
 [[migration-problems]]
-== Проблемы, обнаруженные при переносе
+== Problems Detected During Migration
 
-После первичной настройки приложение не сразу завершило запуск на чистой базе. Коммит https://github.com/makssent/jmix-crm-firebird/commit/724d0a46f18aa9188a7e847e03fedf2fb74456f9[`fixed application startup with Firebird`^] содержит решения двух разных по происхождению проблем.
+After the initial configuration, the application did not complete its first startup with an empty database. The https://github.com/makssent/jmix-crm-firebird/commit/724d0a46f18aa9188a7e847e03fedf2fb74456f9[`fixed application startup with Firebird` commit^] contains solutions to two problems with different causes.
 
 [cols="1,2,2",options="header"]
-.Выявленные проблемы и их решения
+.Detected problems and their solutions
 |===
-|Источник
-|Что произошло
-|Решение в проекте
+|Source
+|What happened
+|Project solution
 
 |`jmix-crm`
-|`DynamicAttributesInitializer` обращался к таблице `DYNAT_CATEGORY` до завершения Liquibase на чистой базе.
-|Для инициализатора была явно задана зависимость `@DependsOn("jmix_Liquibase")`.
+|`DynamicAttributesInitializer` accessed the `DYNAT_CATEGORY` table before Liquibase had finished on an empty database.
+|An explicit `@DependsOn("jmix_Liquibase")` dependency was added to the initializer.
 
 |Liquibase
-|В используемой версии Liquibase атрибут `startValue` для `createSequence` отклонялся с сообщением `startValue is not allowed on firebird`.
-|Для Firebird sequence временно создавалась без `startValue`, после чего выполнялась команда `ALTER SEQUENCE ... RESTART WITH 1000`.
+|In the Liquibase version used, the `startValue` attribute of `createSequence` was rejected with the message `startValue is not allowed on firebird`.
+|For Firebird, the sequence was temporarily created without `startValue`, followed by an `ALTER SEQUENCE ... RESTART WITH 1000` command.
 |===
 
-Первая проблема относилась к порядку инициализации компонентов самого CRM. Она проявилась при создании схемы на чистой базе и не является универсальным ограничением Firebird.
+The first problem concerned the initialization order of the CRM's own components. It appeared while creating the schema in an empty database and is not a general Firebird limitation.
 
-Вторая проблема находилась в проверках сторонней библиотеки. Применённое разделение changeset-а было временным workaround-ом для используемой версии Liquibase, а не обязательной частью подключения Firebird. Исправление было предложено непосредственно в Liquibase; подробности и ссылка на upstream PR приведены в xref:limitations.adoc#sequence-start-value[описании ограничения `createSequence`].
+The second problem originated in validation performed by a third-party library. Splitting the changeset was a temporary workaround for the Liquibase version used, not a required part of connecting Firebird. A fix was proposed directly to Liquibase. For details and a link to the upstream PR, see xref:limitations.adoc#sequence-start-value[the description of the `createSequence` limitation].
 
 [[adapt-tests]]
-== Адаптация и запуск тестов
+== Adapting and Running Tests
 
-После запуска приложения на Firebird на эту же СУБД было переведено тестовое окружение. В `application-test.properties` HSQLDB datasource был заменён на Firebird datasource, а подготовка тестов стала удалять прежний файл тестовой базы перед новым запуском. Благодаря этому схема создавалась заново через Liquibase, а тесты выполнялись с подключением через Jaybird.
+After the application was running on Firebird, the test environment was migrated to the same DBMS. In `application-test.properties`, the HSQLDB datasource was replaced with a Firebird datasource, and the test setup was changed to delete the old test database file before each new run. This allowed Liquibase to recreate the schema and the tests to run through a Jaybird connection.
 
-При очистке тестовых данных также потребовалось добавить `onDelete="CASCADE"` к самоссылочному внешнему ключу категорий. Это изменение связано с иерархической моделью `Category` и реализацией очистки данных в `jmix-crm`; оно не является общим требованием Firebird. Полная адаптация тестового окружения находится в https://github.com/makssent/jmix-crm-firebird/commit/dff13455a8ec6cc8acbf0e16701d3deeebbaa251[коммите `adapt tests for Firebird`^].
+Cleaning test data also required adding `onDelete="CASCADE"` to the self-referencing foreign key of the categories. This change is related to the hierarchical `Category` model and the data cleanup implementation in `jmix-crm`; it is not a general Firebird requirement. The complete test environment adaptation is available in the https://github.com/makssent/jmix-crm-firebird/commit/dff13455a8ec6cc8acbf0e16701d3deeebbaa251[`adapt tests for Firebird` commit^].
 
-Сохранённый отчёт Gradle содержит следующий результат:
+The saved Gradle report contains the following result:
 
 [cols="1,1,1,1,1",options="header"]
-.Результат тестов на Firebird datasource
+.Test results with the Firebird datasource
 |===
-|Всего
-|Выполнено
-|Пропущено
+|Total
+|Executed
+|Skipped
 |Failures / errors
-|Успешность выполненных
+|Success rate of executed tests
 
 |385
 |359
@@ -134,45 +134,45 @@ jmix.data.dbms-type=firebird
 |100%
 |===
 
-Журналы тестов подтверждают создание соединений `org.firebirdsql.jdbc.FBConnection`, успешное выполнение Liquibase, инициализацию EclipseLink и запуск контекста Jmix. В отчёте не зафиксированы название и точная версия сервера, поэтому результат подтверждает работу через Firebird-совместимый datasource и Jaybird без привязки к неподтверждённой версии сервера.
+The test logs confirm the creation of `org.firebirdsql.jdbc.FBConnection` connections, successful Liquibase execution, EclipseLink initialization, and Jmix context startup. The report does not record the server name or exact version. Therefore, the result confirms operation through a Firebird-compatible datasource and Jaybird without tying it to an unverified server version.
 
 [[migration-result]]
-== Результат переноса
+== Migration Result
 
-После внесённых изменений B2B CRM удалось запустить и использовать с Firebird. Liquibase создавал схему в пустой базе, приложение подключалось через Jaybird, пользовательский интерфейс открывался, а основной функционал CRM работал. Прикладную модель и основную бизнес-логику для переноса переписывать не потребовалось.
+After these changes, the B2B CRM could be started and used with Firebird. Liquibase created the schema in an empty database, the application connected through Jaybird, the user interface opened, and the main CRM functionality worked. The application data model and core business logic did not need to be rewritten for the migration.
 
-Выполненные изменения относятся к разным категориям:
+The changes fall into several categories:
 
 [cols="1,2",options="header"]
 |===
-|Категория
-|Изменения
+|Category
+|Changes
 
-|Нормальное подключение Firebird
-|Стартер аддона, Jaybird, datasource, явный тип СУБД и changelog аддона
+|Standard Firebird connection
+|Add-on starter, Jaybird, datasource, explicit DBMS type, and add-on changelog
 
-|Адаптация существующего проекта
-|`${uuid.type}`, дополнение существующих атрибутов `dbms` и Firebird datasource для тестов
+|Existing project adaptation
+|`${uuid.type}`, additions to existing `dbms` attributes, and a Firebird datasource for tests
 
-|Исправления конкретного `jmix-crm`
-|Порядок запуска `DynamicAttributesInitializer` и каскадное удаление категорий при очистке тестовых данных
+|Fixes specific to `jmix-crm`
+|The startup order of `DynamicAttributesInitializer` and cascading category deletion during test data cleanup
 
-|Временный workaround сторонней библиотеки
-|Создание sequence без `startValue` и отдельный `ALTER SEQUENCE`
+|Temporary third-party library workaround
+|Creating a sequence without `startValue`, followed by a separate `ALTER SEQUENCE`
 |===
 
-Главным подтверждением результата стал запуск полного набора тестов CRM с Firebird datasource: 359 тестов были выполнены, 26 пропущены, failures и errors отсутствовали.
+The primary confirmation of the result was the full CRM test suite running with a Firebird datasource: 359 tests were executed, 26 were skipped, and there were no failures or errors.
 
 [[summary]]
-== Итог
+== Summary
 
-Реальный перенос показал путь от готового `jmix-crm` на HSQLDB до работающего приложения на Firebird. Основная часть работы была сосредоточена в зависимостях, настройке datasource и адаптации Liquibase. Дополнительно были исправлены порядок инициализации конкретного компонента CRM и подготовка тестового окружения.
+This real-world migration demonstrated the path from an existing `jmix-crm` application on HSQLDB to a working application on Firebird. Most of the work involved dependencies, datasource configuration, and Liquibase adaptation. In addition, the initialization order of a specific CRM component and the test environment setup were corrected.
 
-История переноса состоит из четырёх последовательных коммитов:
+The migration history consists of four consecutive commits:
 
-* https://github.com/makssent/jmix-crm-firebird/commit/48d1c6e2c58bdbdcf6eb9468c36f54f73f0eeedb[`48d1c6e`^] — подключение Firebird;
-* https://github.com/makssent/jmix-crm-firebird/commit/213b0b3717eced383e9fefa3d0b5b4e2fcf22ff9[`213b0b3`^] — адаптация Liquibase;
-* https://github.com/makssent/jmix-crm-firebird/commit/724d0a46f18aa9188a7e847e03fedf2fb74456f9[`724d0a4`^] — решение проблем первого запуска;
-* https://github.com/makssent/jmix-crm-firebird/commit/dff13455a8ec6cc8acbf0e16701d3deeebbaa251[`dff1345`^] — адаптация и запуск тестов.
+* https://github.com/makssent/jmix-crm-firebird/commit/48d1c6e2c58bdbdcf6eb9468c36f54f73f0eeedb[`48d1c6e`^] — connecting Firebird;
+* https://github.com/makssent/jmix-crm-firebird/commit/213b0b3717eced383e9fefa3d0b5b4e2fcf22ff9[`213b0b3`^] — adapting Liquibase;
+* https://github.com/makssent/jmix-crm-firebird/commit/724d0a46f18aa9188a7e847e03fedf2fb74456f9[`724d0a4`^] — resolving first-startup problems;
+* https://github.com/makssent/jmix-crm-firebird/commit/dff13455a8ec6cc8acbf0e16701d3deeebbaa251[`dff1345`^] — adapting and running tests.
 
-Этот результат подтверждает возможность переноса полноценного Jmix-приложения на Firebird в рассмотренной конфигурации. Он не означает, что в других приложениях не могут проявиться дополнительные особенности их модели данных или используемых сторонних библиотек.
+This result confirms that a full-featured Jmix application can be migrated to Firebird in the configuration examined here. It does not imply that other applications will not encounter additional considerations related to their data models or third-party libraries.

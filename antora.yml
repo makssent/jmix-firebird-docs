@@ -1,5 +1,5 @@
 name: jmix-firebird
-title: Jmix и Firebird
+title: Jmix and Firebird
 version: master
 start_page: firebird:overview.adoc
 nav:
@@ -8,17 +8,14 @@ nav:
   - modules/firebird/partials/nav.adoc
 asciidoc:
   attributes:
-    page-toctitle: "Содержание"
-    tip-caption: "Совет"
-    note-caption: "Замечание"
-    caution-caption: "Внимание"
-    warning-caption: "Осторожно"
-    important-caption: "Важно"
+    page-lang: 'en'
+    page-language-switch-label: 'Русский'
+    page-language-switch-lang: 'ru'
     latest-version: "3.0"
     minimal-idea-version: '2025.3'
     idea-download-site: 'https://www.jetbrains.com/idea/download/'
     java_api_url: 'https://docs.jmix.io/api'
-    jmix-docs: 'https://docs.jmix.ru/jmix'
+    jmix-docs: 'https://docs.jmix.io/jmix'
     addon-group: 'io.github.makssent'
     addon-version: '0.1.0'
     jaybird-version: '6.0.5'

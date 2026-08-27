@@ -1,59 +1,59 @@
-= Создание Liquibase changelog
+= Creating a Liquibase Changelog
 
-При работе с Firebird автоматическая генерация Liquibase changelog средствами Jmix недоступна. После изменения модели данных соответствующее изменение схемы нужно описать вручную в новом changelog-файле. Подробнее это ограничение рассмотрено в разделе xref:limitations.adoc#changelog-generation[Автогенерация Liquibase changelog].
+When working with Firebird, automatic Liquibase changelog generation by Jmix is unavailable. After changing the data model, you need to describe the corresponding schema change manually in a new changelog file. This limitation is discussed in more detail in xref:limitations.adoc#changelog-generation[Automatic Liquibase Changelog Generation].
 
-На этой странице приведён порядок создания changelog для нового изменения схемы на примере добавления атрибута к существующей сущности.
+This page describes how to create a changelog for a new schema change, using the addition of an attribute to an existing entity as an example.
 
 [[create-file]]
-== Создание файла changelog
+== Creating a Changelog File
 
-Для каждого изменения схемы нужно создать отдельный XML-файл в каталоге changelog-ов приложения. Имя файла должно отражать порядок выполнения и назначение изменения. Для этого используется числовой префикс и краткое описание, например:
+For each schema change, create a separate XML file in the application's changelog directory. The file name should indicate the execution order and purpose of the change. Use a numeric prefix and a brief description, for example:
 
 [source,text]
 ----
 060-add-user-joining-date.xml
 ----
 
-В этом имени `060` задаёт порядок выполнения, а `add-user-joining-date` описывает добавление атрибута `joiningDate` сущности `User`. Для следующего изменения нужно выбрать следующий подходящий номер и указать его назначение в имени файла.
+In this name, `060` specifies the execution order, while `add-user-joining-date` describes the addition of the `joiningDate` attribute to the `User` entity. For the next change, select the next appropriate number and indicate its purpose in the file name.
 
 [[schema-change]]
-== Определение изменения схемы
+== Defining the Schema Change
 
-Сначала нужно определить, какое изменение модели данных должно быть отражено в базе, и выбрать соответствующий change type Liquibase. Полный список можно посмотреть в https://docs.liquibase.com/oss/change-types[официальной документации Liquibase^].
+First, determine which data model change must be reflected in the database and select the corresponding Liquibase change type. See the complete list in the https://docs.liquibase.com/oss/change-types[official Liquibase documentation^].
 
-В проектах и примерах с Jmix и Firebird уже использовались и проверялись следующие change types:
+The following change types have already been used and verified in projects and examples with Jmix and Firebird:
 
 [cols="1,2",options="header"]
 |===
-|Изменение модели
-|Change type Liquibase
+|Data model change
+|Liquibase change type
 
-|Новая сущность
+|New entity
 |`createTable`
 
-|Новый атрибут существующей сущности
+|New attribute of an existing entity
 |`addColumn`
 
-|Ссылка на другую сущность
-|`addColumn`, `createIndex` и `addForeignKeyConstraint`
+|Reference to another entity
+|`addColumn`, `createIndex`, and `addForeignKeyConstraint`
 
-|Новый индекс
+|New index
 |`createIndex`
 
-|Новая sequence
+|New sequence
 |`createSequence`
 |===
 
-Jmix запускает подключённую к приложению версию Liquibase и не ограничивает её набор change types. Поэтому Jmix должен выполнять все change types, доступные в этой версии Liquibase. Ограничение автоматической генерации changelog для Firebird не влияет на выполнение changelog, созданного вручную.
+Jmix runs the Liquibase version included in the application and does not restrict its set of change types. Therefore, Jmix should execute all change types available in that Liquibase version. The limitation on automatic changelog generation for Firebird does not affect the execution of manually created changelogs.
 
-Поддержка Firebird в Liquibase давно не обновлялась. Поэтому даже для заявленного как поддерживаемого change type возможны ошибки генерации или выполнения SQL на Firebird. Подтверждённый пример такого ограничения описан в разделе xref:limitations.adoc#sequence-start-value[Пример: createSequence и startValue].
+Liquibase support for Firebird has not been updated for a long time. Therefore, SQL generation or execution errors may occur on Firebird even for a change type declared as supported. A confirmed example of this limitation is described in xref:limitations.adoc#sequence-start-value[Example: createSequence and startValue].
 
 [[changeset]]
-== Оформление changeset
+== Defining a Changeset
 
-Каждый changelog является XML-файлом с корневым элементом `databaseChangeLog`. Изменение схемы оформляется внутри элемента `changeSet`, для которого нужно задать `id` и `author`.
+Each changelog is an XML file with the `databaseChangeLog` root element. Define the schema change inside a `changeSet` element and specify its `id` and `author`.
 
-Ниже приведён changelog для добавления колонки `JOINING_DATE`:
+The following changelog adds the `JOINING_DATE` column:
 
 [source,xml]
 ----
@@ -73,23 +73,23 @@ Jmix запускает подключённую к приложению вер�
 </databaseChangeLog>
 ----
 
-В этом примере:
+In this example:
 
-* `id="1"` и `author="onboarding"` идентифицируют changeset;
-* `addColumn` описывает изменение существующей таблицы;
-* `tableName="USER_"` указывает таблицу сущности `User`;
-* `name="JOINING_DATE"` задаёт имя новой колонки;
-* `type="date"` соответствует атрибуту Java типа `LocalDate`;
-* ограничение `nullable="false"` не задаётся, поскольку атрибут необязательный и существующие строки должны сохранить значение `NULL`.
+* `id="1"` and `author="onboarding"` identify the changeset;
+* `addColumn` describes a change to an existing table;
+* `tableName="USER_"` specifies the table of the `User` entity;
+* `name="JOINING_DATE"` specifies the name of the new column;
+* `type="date"` corresponds to an attribute of the Java `LocalDate` type;
+* the `nullable="false"` constraint is not specified because the attribute is optional and existing rows must retain a `NULL` value.
 
-Полный пример с описанием внесённых изменений можно посмотреть в xref:tutorial:data-in-ui.adoc#joining-date-attr[разделе самоучителя о добавлении атрибута joiningDate].
+For a complete example with a description of the changes, see the xref:tutorial:data-in-ui.adoc#joining-date-attr[tutorial section on adding the joiningDate attribute].
 
 [[firebird-details]]
-== Особенности changelog для Firebird
+== Firebird-Specific Changelog Details
 
-Большинство изменений описывается стандартными элементами Liquibase. Дополнительная адаптация нужна только там, где changelog зависит от типа СУБД или от сопоставления типов.
+Most changes are described using standard Liquibase elements. Additional adaptation is required only when a changelog depends on the DBMS type or type mapping.
 
-При создании новой таблицы с UUID-колонками вместо конкретного SQL-типа нужно указывать свойство `${uuid.type}`:
+When creating a new table with UUID columns, specify the `${uuid.type}` property instead of a specific SQL type:
 
 [source,xml]
 ----
@@ -98,15 +98,15 @@ Jmix запускает подключённую к приложению вер�
 </column>
 ----
 
-Значение свойства для Firebird объявляется changelog-ом аддона. Пример создания таблицы с UUID-идентификатором приведён в xref:tutorial:simple-crud.adoc#run-app[разделе самоучителя о создании сущности Step].
+The property value for Firebird is declared by the add-on changelog. An example of creating a table with a UUID identifier is provided in the xref:tutorial:simple-crud.adoc#run-app[tutorial section on creating the Step entity].
 
-Если существующий changeset ограничен атрибутом `dbms` и должен выполняться с Firebird, в список нужно добавить `firebird`:
+If an existing changeset is restricted by the `dbms` attribute and must run with Firebird, add `firebird` to the list:
 
 [source,xml]
 ----
 <insert tableName="USER_" dbms="postgresql, mssql, hsqldb, firebird">
 ----
 
-Атрибут `dbms` не требуется для обычных изменений, которые должны выполняться на всех поддерживаемых СУБД.
+The `dbms` attribute is not required for regular changes that must run on all supported DBMSs.
 
-Для операций, ограниченных используемой версией Liquibase, может потребоваться отдельный changeset с `dbms="firebird"`. Подтверждённый пример временного решения для `createSequence` и `startValue` описан в разделе xref:limitations.adoc#sequence-start-value[Пример: createSequence и startValue].
+Operations limited by the Liquibase version in use may require a separate changeset with `dbms="firebird"`. A confirmed workaround for `createSequence` and `startValue` is described in xref:limitations.adoc#sequence-start-value[Example: createSequence and startValue].
