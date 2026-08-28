@@ -28,10 +28,7 @@ The application selected for migration was the https://github.com/jmix-framework
 
 The CRM includes customers, a product catalog, orders, invoices, payments, user tasks, analytics, and reports. The project also uses auditing, dynamic attributes, and other Jmix add-ons. Therefore, this migration tested the Firebird integration not only with a minimal application, but also with an extensive data model, user interface, and existing test suite.
 
-.B2B CRM before migration to Firebird
-image::https://raw.githubusercontent.com/jmix-framework/jmix-crm/master/images/screenshots/dashboard.png[Dashboard of the original B2B CRM application,align="center",width="900"]
-
-This image shows the original application. The operation of the same application with Firebird was verified separately after the migration.
+See the https://github.com/jmix-framework/jmix-crm/blob/master/images/screenshots/dashboard.png[dashboard screenshot in the upstream Jmix CRM project^] for the original application. The operation of the same application with Firebird was verified separately after the migration.
 
 [[connect-firebird]]
 == Connecting Firebird
