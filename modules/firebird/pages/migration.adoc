@@ -28,10 +28,7 @@
 
 CRM содержит клиентов, каталог, заказы, счета, платежи, пользовательские задачи, аналитику и отчёты. В проекте также используются аудит, динамические атрибуты и другие аддоны Jmix. Поэтому перенос проверял интеграцию Firebird не только на минимальном приложении, но и на развитой модели данных, пользовательском интерфейсе и существующем наборе тестов.
 
-.B2B CRM до переноса на Firebird
-image::https://raw.githubusercontent.com/jmix-framework/jmix-crm/master/images/screenshots/dashboard.png[Dashboard исходного приложения B2B CRM,align="center",width="900"]
-
-Это изображение показывает исходное приложение. Работа того же приложения с Firebird подтверждалась отдельно после переноса.
+Исходное приложение показано на https://github.com/jmix-framework/jmix-crm/blob/master/images/screenshots/dashboard.png[скриншоте dashboard в upstream-проекте Jmix CRM^]. Работа того же приложения с Firebird подтверждалась отдельно после переноса.
 
 [[connect-firebird]]
 == Подключение Firebird

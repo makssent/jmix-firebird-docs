@@ -1,0 +1,12 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+Except for the third-party materials identified below, the original documentation content in this repository and the project's adaptations are licensed under the Creative Commons Attribution 4.0 International license.
+
+License summary: https://creativecommons.org/licenses/by/4.0/
+Legal code: https://creativecommons.org/licenses/by/4.0/legalcode
+
+The adapted Jmix tutorial in `modules/tutorial` is derived from Jmix Documentation, which is also licensed under CC BY 4.0. Its source, attribution, and a description of the changes are provided in `UPSTREAM.md`.
+
+Third-party materials are not relicensed by this notice. They remain under their original licenses and are listed in `THIRD_PARTY_NOTICES.md`. Copies of licenses that need to accompany those materials are provided in the `LICENSES` directory.
+
+This is independent documentation and is not an official Jmix publication.
