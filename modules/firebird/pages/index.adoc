@@ -4,20 +4,16 @@ Firebird не входит в список СУБД, поддерживаемы�
 
 [IMPORTANT]
 ====
-Этот раздел рассчитан прежде всего на перенос готового Jmix-приложения на Firebird. Если приложения ещё нет или нет опыта работы с Jmix, лучше начать с xref:tutorial:index.adoc[самоучителя]. В качестве основы можно взять https://github.com/makssent/jmix-firebird-application[jmix-firebird-application^] — минимальный Jmix-проект из стандартного шаблона, уже настроенный для Firebird.
+Этот раздел рассчитан прежде всего на перенос готового Jmix-приложения на Firebird. Если приложения ещё нет, то можно взять за основу https://github.com/makssent/jmix-firebird-application[jmix-firebird-application^] — минимальный Jmix-проект из стандартного шаблона, уже настроенный для Firebird.
+
+Если же нет опыта работы с Jmix, лучше начать с xref:tutorial:index.adoc[самоучителя] в котором отражена работа с Jmix + Firebird.
 ====
 
-Интеграция проверена на реальном приложении https://github.com/makssent/jmix-crm-firebird[jmix-crm-firebird^]: приложение удалось запустить и использовать с Firebird, Liquibase создавал схему, тесты подключались через Jaybird, а основной функционал проекта работал. Весь xref:tutorial:index.adoc[самоучитель] также проверен с Firebird.
-
-[IMPORTANT]
-====
-Аддон версии `{addon-version}` поддерживает только Jmix {latest-version}.
-====
-
+Интеграция проверена на реальном приложении https://github.com/makssent/jmix-crm-firebird[jmix-crm-firebird^]: приложение удалось запустить и использовать с Firebird, Liquibase создавал схему, тесты подключались через Jaybird, а основной функционал проекта работал, что отражено в разделе xref:migration.adoc[].
 Для настройки потребуются:
 
 * запущенный сервер Firebird;
-* пустая база данных: Firebird должен создать ее до первого запуска приложения;
+* пустая база данных (базу нужно создать до первого запуска приложения);
 * учетная запись с правами на создание и изменение объектов базы данных.
 
 [[configuration]]
@@ -36,6 +32,11 @@ dependencies {
     runtimeOnly 'org.firebirdsql.jdbc:jaybird:{jaybird-version}'
 }
 ----
+
+[IMPORTANT]
+====
+Аддон jmix-firebird версии `{addon-version}` адаптирован для работы только с Jmix {latest-version}.
+====
 
 Если проект использовал встроенную HSQLDB, зависимость `runtimeOnly 'org.hsqldb:hsqldb'` нужно удалить. После изменения файла Gradle-проект нужно обновить в IDE.
 
@@ -91,3 +92,7 @@ Firebird отсутствует в стандартном наборе типо�
 Порядок ручного создания новых changelog-ов описан в разделе xref:liquibase-changelog.adoc[Создание Liquibase changelog].
 
 Известные ограничения интеграции собраны в разделе xref:limitations.adoc[Ограничения Firebird]. Практический путь адаптации готового приложения показан в разделе xref:migration.adoc[Пример переноса приложения на Firebird].
+
+== Заключение
+
+После выполнения этих шагов Jmix-приложение может работать с Firebird. Могут возникнуть отдельные проблемы совместимости из-за особенностей Firebird или его поддержки в сторонних библиотеках, например xref:limitations.adoc#sequence-start-value[ограничение `startValue` для sequence], но данные проблемы не препятствуют интеграции в целом: до исправления соответствующей библиотеки для них можно применять локальные обходные решения.
