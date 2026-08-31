@@ -175,7 +175,7 @@ dependencies {
     implementation 'io.jmix.datatools:jmix-datatools-flowui-starter'
 
     // Added for Firebird: the add-on that provides database support
-    implementation 'io.github.makssent:jmix-firebird-starter:3.0.0'
+    implementation 'io.github.makssent:jmix-firebird-starter:3.0.1'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'com.vaadin:vaadin-dev'
