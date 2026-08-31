@@ -1,23 +1,19 @@
-= Getting Started
+= Introduction
 
-Firebird support in Jmix is provided by the https://github.com/makssent/jmix-firebird-addon[jmix-firebird-addon^]. This documentation applies to Jmix 3.0. Choose a section based on your task.
+This documentation covers using Firebird with Jmix. For detailed information about the platform itself, see the https://docs.jmix.io/jmix/intro.html[official Jmix documentation^].
 
-== Existing Jmix Project
+== Getting Started
 
-xref:firebird:index.adoc[Connecting Firebird to a Jmix Project] describes how to configure an existing application to work with a new empty Firebird database, including dependencies, Jaybird, the data source, and Liquibase changelog adaptations.
+Choose the scenario that matches your needs.
 
-Liquibase creates the schema for the new database. Migrating existing data from HSQLDB, PostgreSQL, or another DBMS is outside the scope of this section.
+=== You Are New to Jmix
 
-== Starting with Jmix from Scratch
+Start with the xref:tutorial:index.adoc[tutorial]. It guides you through creating a Jmix application step by step and configuring it to use Firebird from the outset.
 
-The xref:tutorial:index.adoc[tutorial] demonstrates how to create a Jmix application with Firebird step by step, from project setup to the user interface, business logic, and access control.
+=== You Already Have a Jmix Project
 
-== Minimal Ready-to-Use Example
+First, review the xref:firebird:limitations.adoc[Firebird limitations] to determine whether Firebird is suitable for your project. Then proceed to xref:firebird:index.adoc[Connecting Firebird to a Jmix Project], which explains how to add Firebird support to an existing application.
 
-The https://github.com/makssent/jmix-firebird-application[jmix-firebird-application^] project was created from the standard Jmix 3.0 template and is already configured to work with Firebird. Instructions for preparing the database, configuring the connection, and running the application are available in the project's README.
+=== Example of Migrating an Existing Application
 
-== Additional Resources
-
-* xref:firebird:migration.adoc[Example of Migrating an Application to Firebird] — a practical example of migrating the existing `jmix-crm` application from HSQLDB to Firebird.
-* xref:firebird:liquibase-changelog.adoc[Creating a Liquibase Changelog] — manually creating a changelog for data model changes.
-* xref:firebird:limitations.adoc[Firebird Limitations] — known integration limitations and tested workarounds.
+See xref:firebird:migration.adoc[Example of Migrating an Application to Firebird]. It shows how the existing `jmix-crm` application was migrated from HSQLDB to Firebird, what changes were required, and the resulting outcome.

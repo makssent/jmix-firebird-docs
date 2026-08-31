@@ -1,1 +1,1 @@
-* xref:firebird:overview.adoc[Getting Started]
+* xref:firebird:overview.adoc[Introduction]
