@@ -4,20 +4,17 @@ Firebird is not included in the list of DBMSs supported by Jmix out of the box. 
 
 [IMPORTANT]
 ====
-This section is intended primarily for migrating an existing Jmix application to Firebird. If you do not have an application yet or have no experience with Jmix, start with the xref:tutorial:index.adoc[tutorial]. You can use https://github.com/makssent/jmix-firebird-application[jmix-firebird-application^] as a foundation. It is a minimal Jmix project created from the standard template and already configured for Firebird.
+This section is intended primarily for migrating an existing Jmix application to Firebird. If you do not have an application yet, you can use https://github.com/makssent/jmix-firebird-application[jmix-firebird-application^] as a starting point. It is a minimal Jmix project created from the standard template and already configured for Firebird.
+
+If you are new to Jmix, start with the xref:tutorial:index.adoc[tutorial], which covers building a Jmix application with Firebird.
 ====
 
-The integration has been tested with the https://github.com/makssent/jmix-crm-firebird[jmix-crm-firebird^] application: the application ran with Firebird, Liquibase created the schema, the tests connected through Jaybird, and the project's core functionality worked. The entire xref:tutorial:index.adoc[tutorial] has also been tested with Firebird.
-
-[IMPORTANT]
-====
-Add-on version `{addon-version}` supports only Jmix {latest-version}.
-====
+The integration has been tested with the https://github.com/makssent/jmix-crm-firebird[jmix-crm-firebird^] application: the application ran with Firebird, Liquibase created the schema, the tests connected through Jaybird, and the project's core functionality worked, as described in xref:migration.adoc[Example of Migrating an Application to Firebird].
 
 The following are required:
 
 * a running Firebird server;
-* an empty database, which must be created by Firebird before the application starts for the first time;
+* an empty database (create the database before the application starts for the first time);
 * a user account with permission to create and modify database objects.
 
 [[configuration]]
@@ -36,6 +33,11 @@ dependencies {
     runtimeOnly 'org.firebirdsql.jdbc:jaybird:{jaybird-version}'
 }
 ----
+
+[IMPORTANT]
+====
+The jmix-firebird add-on version `{addon-version}` is designed to work only with Jmix {latest-version}.
+====
 
 If the project used the embedded HSQLDB database, remove the `runtimeOnly 'org.hsqldb:hsqldb'` dependency. After changing the file, refresh the Gradle project in the IDE.
 
@@ -91,3 +93,7 @@ See the https://github.com/makssent/jmix-crm-firebird/commit/213b0b3717eced383e9
 The procedure for manually creating new changelogs is described in xref:liquibase-changelog.adoc[Creating a Liquibase Changelog].
 
 Known integration limitations are listed in xref:limitations.adoc[Firebird Limitations]. A practical approach to adapting an existing application is demonstrated in xref:migration.adoc[Example of Migrating an Application to Firebird].
+
+== Conclusion
+
+After completing these steps, a Jmix application can run with Firebird. Isolated compatibility issues may still arise from Firebird-specific behavior or third-party Firebird support, such as xref:limitations.adoc#sequence-start-value[the `startValue` restriction for sequences], but they do not prevent the overall integration from working. Until the corresponding library is fixed, such issues can be handled with local workarounds.
