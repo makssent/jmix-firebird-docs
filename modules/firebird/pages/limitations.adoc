@@ -1,8 +1,6 @@
 = Firebird Limitations
 
-This section summarizes known limitations and considerations for using Firebird with Jmix that were identified in practice. The points below were observed while running the real-world `jmix-crm` project on Firebird and completing the tutorial.
-
-Although the `jmix-crm` tests run with Firebird revealed no additional limitations, other considerations or limitations may exist. They may not appear in the scenarios covered so far and may be discovered as Firebird is used further with Jmix.
+This section summarizes known limitations and considerations for using Firebird with Jmix that were identified in practice.
 
 [[changelog-generation]]
 == Automatic Liquibase Changelog Generation
@@ -23,9 +21,9 @@ The process of creating a Liquibase changelog is described in more detail in xre
 [[third-party-support]]
 == Firebird Support in Third-Party Libraries
 
-Liquibase and EclipseLink already support Firebird. For example, EclipseLink provides a dedicated https://eclipse.dev/eclipselink/api/4.0/org.eclipse.persistence.core/org/eclipse/persistence/platform/database/FirebirdPlatform.html[Firebird platform^]. However, some of this support was originally developed for older Firebird versions. Checks and restrictions in third-party libraries do not always account for the capabilities of current DBMS versions.
+Jmix uses Liquibase and EclipseLink for database operations. Liquibase manages the database schema and applies changelogs, while EclipseLink provides application-level database access.
 
-This does not mean that all such limitations affect Jmix applications. However, if an incompatibility can be reproduced in Liquibase, EclipseLink, or another dependency, it should preferably be fixed in the corresponding upstream project rather than making a workaround a permanent part of `jmix-firebird-addon`.
+Both libraries already support Firebird. However, some of that support was implemented for older Firebird versions, so certain restrictions and checks may no longer apply to current DBMS versions.
 
 [[sequence-start-value]]
 === Example: createSequence and startValue
@@ -44,7 +42,9 @@ failed with the following error:
 startValue is not allowed on firebird
 ----
 
-This restriction is no longer applicable to Firebird 4.0 and later. To run the project, `jmix-crm-firebird` uses a temporary workaround: the regular changeset excludes Firebird, while a separate Firebird changeset creates the sequence without `startValue` and then sets the initial value with an SQL statement:
+This restriction no longer applies to Firebird 4.0 and later. It comes from Liquibase's Firebird implementation rather than Jmix, so the appropriate fix belongs in Liquibase itself.
+
+To run the project, `jmix-crm-firebird` uses a temporary workaround: the regular changeset excludes Firebird, while a separate Firebird changeset creates the sequence without `startValue` and then sets the initial value with an SQL statement:
 
 [source,xml]
 ----
@@ -60,11 +60,8 @@ This restriction is no longer applicable to Firebird 4.0 and later. To run the p
 
 See the complete example in this https://github.com/makssent/jmix-crm-firebird/commit/724d0a46f18aa9188a7e847e03fedf2fb74456f9[jmix-crm-firebird commit^].
 
-A fix was submitted directly to Liquibase: https://github.com/liquibase/liquibase/pull/7922[PR #7922^] makes support for `startValue` and `incrementBy` dependent on the Firebird version. The restrictions remain for versions earlier than 4.0 and are removed for Firebird 4.0 and later.
+A fix for correct `startValue` behavior was submitted directly to Liquibase: https://github.com/liquibase/liquibase/pull/7922[PR #7922^].
 
-[[temporary-workarounds]]
-== Temporary Workarounds
+== Conclusion
 
-Until a fix is included in a release of the third-party library, a local workaround can be applied following the `jmix-crm-firebird` example. Such a solution should be considered temporary and added only for a confirmed incompatibility in the dependency version in use.
-
-After upgrading to a version of Liquibase, EclipseLink, or another library that fixes the specific incompatibility with the Firebird version in use, remove the workaround. It is not a required architectural part of the Firebird integration with Jmix.
+This page lists the limitations currently known. No additional limitations were found while completing the tutorial, running the real-world `jmix-crm` application, and executing its tests. Further use of Firebird with Jmix may reveal other considerations.
