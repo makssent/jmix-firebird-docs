@@ -31,7 +31,3 @@ npx antora antora-playbook.yml
 The local playbook builds the currently checked-out branch by using `HEAD`. Open `build/site/index.html` after the build completes.
 
 `antora-playbook.ci.yml` selects the corresponding remote language branch explicitly. The publication URL is intentionally not configured yet.
-
-## Language Switch
-
-The supplemental UI links a page to the same path in the other language. The local playbooks use the provisional `/ru` and `/en` roots. CI leaves `page-language-switch-base-url` unset, so no production URL is assumed and the switch remains hidden. Once publication URLs are known, set the counterpart base URL through this AsciiDoc attribute in the CI configuration; page sources do not need to change.

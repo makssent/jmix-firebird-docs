@@ -15,8 +15,6 @@ asciidoc:
     warning-caption: "Осторожно"
     important-caption: "Важно"
     page-lang: 'ru'
-    page-language-switch-label: 'English'
-    page-language-switch-lang: 'en'
     latest-version: "3.0"
     minimal-idea-version: '2025.3'
     idea-download-site: 'https://www.jetbrains.com/idea/download/'
