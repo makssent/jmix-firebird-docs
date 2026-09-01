@@ -6,14 +6,16 @@ This documentation covers using Firebird with Jmix. For detailed information abo
 
 Choose the scenario that matches your needs.
 
-=== You Are New to Jmix
+[cols="1,3"]
+|===
 
-Start with the xref:tutorial:index.adoc[tutorial]. It guides you through creating a Jmix application step by step and configuring it to use Firebird from the outset.
+|You Are New to Jmix
+|Start with the xref:tutorial:index.adoc[tutorial]. It guides you through creating a Jmix application step by step and configuring it to use Firebird from the outset.
 
-=== You Already Have a Jmix Project
+|You Already Have a Jmix Project
+|First, review the xref:firebird:limitations.adoc[Firebird limitations] to determine whether Firebird is suitable for your project. Then proceed to xref:firebird:index.adoc[Connecting Firebird to a Jmix Project], which explains how to add Firebird support to an existing application.
 
-First, review the xref:firebird:limitations.adoc[Firebird limitations] to determine whether Firebird is suitable for your project. Then proceed to xref:firebird:index.adoc[Connecting Firebird to a Jmix Project], which explains how to add Firebird support to an existing application.
+|You Need a Practical Example
+|See xref:firebird:migration.adoc[Example of Migrating an Application to Firebird]. It shows how the existing `jmix-crm` application was migrated from HSQLDB to Firebird, what changes were required, and the resulting outcome.
 
-=== Example of Migrating an Existing Application
-
-See xref:firebird:migration.adoc[Example of Migrating an Application to Firebird]. It shows how the existing `jmix-crm` application was migrated from HSQLDB to Firebird, what changes were required, and the resulting outcome.
+|===
