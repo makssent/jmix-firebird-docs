@@ -9,8 +9,6 @@ nav:
 asciidoc:
   attributes:
     page-lang: 'en'
-    page-language-switch-label: 'Русский'
-    page-language-switch-lang: 'ru'
     latest-version: "3.0"
     minimal-idea-version: '2025.3'
     idea-download-site: 'https://www.jetbrains.com/idea/download/'
