@@ -142,9 +142,9 @@ Studio сгенерирует два экрана: `Department.list` и `Departm
 [[run-app]]
 == Запуск приложения
 
-Как и в xref:simple-crud.adoc#run-app[предыдущей главе], таблицу для новой сущности придется описать самостоятельно: для поддерживаемых СУБД Studio сгенерировала бы changelog перед запуском, а с Firebird автогенерация недоступна.
+Как и в xref:simple-crud.adoc#run-app[предыдущей главе], таблицу для новой сущности придется описать самостоятельно.
 
-Создайте файл `030-create-department.xml` - в разделе *Data Stores* -> *Main Data Store* -> *Liquibase: changelog.xml* окна инструментов *Jmix*, либо в каталоге `src/main/resources/com/company/onboarding/liquibase/changelog` в дереве проекта. Он должен создавать таблицу `DEPARTMENT` с уникальным ограничением на столбец `NAME`, индексом по столбцу внешнего ключа и внешним ключом на таблицу `USER_`.
+Создайте файл `030-create-department.xml` - в разделе *Data Stores* -> *Main Data Store* -> *Liquibase: changelog.xml* окна инструментов *Jmix*, либо в каталоге `src/main/resources/com/company/onboarding/liquibase/changelog` в дереве проекта. Он должен создавать таблицу `DEPARTMENT` с уникальным ограничением на столбец `NAME`, индексом по столбцу внешнего ключа и внешним ключом на таблицу `USER_`. Ниже приведён готовый пример конфигурации, который можно использовать если возникают сложности с самостоятельным написанием.
 
 .Готовый конфиг
 [%collapsible]
