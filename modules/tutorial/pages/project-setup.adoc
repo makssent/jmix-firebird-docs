@@ -255,7 +255,7 @@ First, open the master changelog. In the *Jmix* tool window, it is located under
 </databaseChangeLog>
 ----
 
-The order is important. The add-on changelog declares Liquibase properties such as `${uuid.type}`, whose value is `varchar(36)` because Firebird has no dedicated UUID type. A declared property is visible only to scripts included below it, so the add-on changelog must come first.
+The order is important. A declared property is visible only to scripts included below it, so the add-on changelog must come first.
 
 Second, open the nested `010-init-user.xml` file, which creates the administrator account. In the project template, these inserts are restricted to a list of DBMS types that does not include Firebird. Add `firebird` to the `dbms` attribute of both changesets:
 

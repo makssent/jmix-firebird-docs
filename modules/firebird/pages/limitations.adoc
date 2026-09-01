@@ -2,14 +2,21 @@
 
 This section summarizes known limitations and considerations for using Firebird with Jmix that were identified in practice.
 
+[[unofficial-support]]
+== Unofficial Support
+
+Firebird is not among the DBMSs officially supported by Jmix. Support for Firebird as a primary database was proposed directly for Jmix in https://github.com/jmix-framework/jmix/pull/5532[PR #5532^], but the Jmix team did not accept the PR because of the maintenance cost of supporting another DBMS and suggested implementing the support as an add-on.
+
+Therefore, the integration is implemented through the third-party `jmix-firebird-addon`, which is maintained separately from the core Jmix team. The add-on enables Jmix to work with Firebird, but it does not have the same maintenance guarantees as built-in DBMS support. Indefinite maintenance of the add-on and the absence of new compatibility issues in future versions of Jmix and its libraries cannot be guaranteed.
+
 [[changelog-generation]]
 == Automatic Liquibase Changelog Generation
 
-The main known limitation is that automatic Liquibase changelog generation does not work for Firebird. After changing the data model, you must create the required changesets manually.
+For DBMSs supported by Jmix out of the box, Studio compares the data model with the database schema before startup and can automatically generate a Liquibase changelog for missing objects. This mechanism is unavailable for Firebird: Studio does not create changesets for data model changes or provide a ready-to-use schema update.
 
-Support for Firebird as a primary database was proposed directly for Jmix in https://github.com/jmix-framework/jmix/pull/5532[PR #5532^]. The Jmix team did not accept the PR because of the ongoing maintenance cost of supporting another DBMS and suggested implementing the support as an add-on.
+Therefore, when adding an entity, attribute, reference, index, or another object, the developer must determine the required database changes, describe them in an XML changelog, and select appropriate types and change types with Firebird in mind. This is the main practical blocker because every data model change requires the corresponding schema change to be prepared and verified manually.
 
-As a result, Firebird support is implemented in the separate `jmix-firebird-addon` rather than in the main Jmix project. The add-on enables applications to work with Firebird, but automatic changelog generation for Firebird remains unavailable. Manually created changelogs are applied when the application starts.
+This limitation applies only to automatic generation. Manually created changelogs are executed normally by Liquibase when the application starts, so a prepared migration can be applied in the same way as for other DBMSs.
 
 [TIP]
 ====

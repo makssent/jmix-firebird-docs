@@ -142,9 +142,9 @@ Studio will generate two views: `Department.list` and `Department.detail` and op
 [[run-app]]
 == Running the Application
 
-As in the xref:simple-crud.adoc#run-app[previous chapter], you need to define the table for the new entity manually. Studio would generate the changelog before startup for a supported database, but automatic changelog generation is not available for Firebird.
+As in the xref:simple-crud.adoc#run-app[previous chapter], you need to define the table for the new entity manually.
 
-Create the `030-create-department.xml` file using the *Data Stores* -> *Main Data Store* -> *Liquibase: changelog.xml* section of the *Jmix* tool window, or in the `src/main/resources/com/company/onboarding/liquibase/changelog` directory in the project tree. It should create the `DEPARTMENT` table with a unique constraint on the `NAME` column, an index on the foreign key column, and a foreign key to the `USER_` table.
+Create the `030-create-department.xml` file using the *Data Stores* -> *Main Data Store* -> *Liquibase: changelog.xml* section of the *Jmix* tool window, or in the `src/main/resources/com/company/onboarding/liquibase/changelog` directory in the project tree. It should create the `DEPARTMENT` table with a unique constraint on the `NAME` column, an index on the foreign key column, and a foreign key to the `USER_` table. The completed configuration below can be used if you have difficulty writing it yourself.
 
 .Completed changelog
 [%collapsible]
